@@ -10,7 +10,7 @@ import (
 func TestSurnameErrors(t *testing.T) {
 	Convey("Test surname errors", t, func() {
 		Convey("Empty", func() {
-			err := failure.ErrSurnameIsEmpty
+			err := failure.ErrNameIsEmpty
 
 			So(err.Error(), ShouldNotBeEmpty)
 		})
