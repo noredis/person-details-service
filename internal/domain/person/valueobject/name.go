@@ -1,6 +1,7 @@
 package person_vo
 
 import (
+	"fmt"
 	failure "person-details-service/internal/domain/person/failure"
 	"strings"
 )
@@ -10,9 +11,11 @@ type Name struct {
 }
 
 func NewName(name string) (*Name, error) {
+	const op = "person_vo.NewName: %w"
+
 	name = strings.Trim(name, " ")
 	if name == "" {
-		return nil, failure.ErrNameIsEmpty
+		return nil, fmt.Errorf(op, failure.ErrNameIsEmpty)
 	}
 
 	return &Name{name}, nil
