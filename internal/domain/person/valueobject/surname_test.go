@@ -21,6 +21,16 @@ func TestSurname(t *testing.T) {
 			So(errors.Is(err, failure.ErrSurnameIsEmpty), ShouldBeTrue)
 		})
 
+		Convey("Only spaces", func() {
+			s := " "
+
+			surname, err := vo.NewSurname(s)
+
+			So(surname, ShouldBeNil)
+			So(err, ShouldNotBeNil)
+			So(errors.Is(err, failure.ErrSurnameIsEmpty), ShouldBeTrue)
+		})
+
 		Convey("Min length surname", func() {
 			s := "A"
 
