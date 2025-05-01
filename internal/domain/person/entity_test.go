@@ -27,17 +27,7 @@ func TestPerson(t *testing.T) {
 			So(johnDoe.Patronymic(), ShouldBeNil)
 
 			Convey("Get full name", func() {
-				So(johnDoe.FullName(), ShouldEqual, "John Doe")
-			})
-
-			Convey("Get full name with patronymic", func() {
-				p = "John"
-
-				patronymic = vo.NewPatronymic(p)
-
-				johnDoe = person.CreatePerson(*name, *surname, patronymic)
-
-				So(johnDoe.FullName(), ShouldEqual, "John Doe John")
+				So(johnDoe.FullName().Value(), ShouldEqual, "John Doe")
 			})
 		})
 	})

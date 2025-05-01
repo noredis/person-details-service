@@ -13,7 +13,7 @@ type AgeRepository interface {
 type FakeAgeRepository struct{}
 
 func (r FakeAgeRepository) FindOutPersonsAge(ctx context.Context, p person.Person) (*vo.Age, error) {
-	if p.FullName() == "John Doe" {
+	if p.FullName().Value() == "John Doe" {
 		return vo.NewAge(37)
 	}
 	return nil, nil

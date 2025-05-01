@@ -1,7 +1,6 @@
 package person
 
 import (
-	"fmt"
 	vo "person-details-service/internal/domain/person/valueobject"
 )
 
@@ -27,9 +26,6 @@ func (p Person) Patronymic() *vo.Patronymic {
 	return p.patronymic
 }
 
-func (p Person) FullName() string {
-	if p.Patronymic() == nil {
-		return fmt.Sprintf("%s %s", p.Name().Value(), p.Surname().Value())
-	}
-	return fmt.Sprintf("%s %s %s", p.Name().Value(), p.Surname().Value(), p.Patronymic().Value())
+func (p Person) FullName() vo.FullName {
+	return vo.NewFullName(p.Name(), p.Surname(), p.Patronymic())
 }

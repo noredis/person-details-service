@@ -46,7 +46,7 @@ func (r *AgeRepository) FindOutPersonsAge(ctx context.Context, p person.Person) 
 	reqURL := *r.baseURL
 
 	query := reqURL.Query()
-	query.Add("name", p.FullName())
+	query.Add("name", p.FullName().Value())
 	reqURL.RawQuery = query.Encode()
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, reqURL.String(), nil)
