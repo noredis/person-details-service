@@ -1,10 +1,10 @@
-package person_repo_test
+package age_repo_test
 
 import (
 	"context"
 	"person-details-service/internal/domain/person"
-	repo "person-details-service/internal/domain/person/repo"
 	vo "person-details-service/internal/domain/person/valueobject"
+	repo "person-details-service/internal/repo/age"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
