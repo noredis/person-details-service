@@ -8,7 +8,6 @@ import (
 	"log/slog"
 	"net/http"
 	"net/url"
-	"person-details-service/internal/domain/person"
 	"person-details-service/internal/domain/person/valueobject"
 	"time"
 )
@@ -40,13 +39,13 @@ func NewAgeRepository(logger slog.Logger, baseURL string, timeout time.Duration)
 	}, nil
 }
 
-func (r *AgeRepository) FindOutPersonsAge(ctx context.Context, p person.Person) (*person_vo.Age, error) {
+func (r *AgeRepository) FindOutPersonsAge(ctx context.Context, fullName person_vo.FullName) (*person_vo.Age, error) {
 	const op = "AgeRepository.FindOutPersonsAge"
 
 	reqURL := *r.baseURL
 
 	query := reqURL.Query()
-	query.Add("name", p.FullName().Value())
+	query.Add("name", fullName.Value())
 	reqURL.RawQuery = query.Encode()
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, reqURL.String(), nil)
@@ -56,7 +55,7 @@ func (r *AgeRepository) FindOutPersonsAge(ctx context.Context, p person.Person) 
 
 	r.logger.Debug("Sending request to age API",
 		"url", reqURL.String(),
-		"person", p.FullName(),
+		"person", fullName.Value(),
 	)
 
 	resp, err := r.client.Do(req)

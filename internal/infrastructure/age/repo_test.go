@@ -36,7 +36,7 @@ func TestRealAgeRepository(t *testing.T) {
 				patronymic := person_vo.NewPatronymic("")
 
 				johnDoe := person.CreatePerson(*name, *surname, patronymic)
-				age, err := repo.FindOutPersonsAge(ctx, *johnDoe)
+				age, err := repo.FindOutPersonsAge(ctx, johnDoe.FullName())
 
 				So(age, ShouldNotBeNil)
 				So(err, ShouldBeNil)
@@ -50,7 +50,7 @@ func TestRealAgeRepository(t *testing.T) {
 				patronymic := person_vo.NewPatronymic("")
 
 				johnDoe := person.CreatePerson(*name, *surname, patronymic)
-				age, err := repo.FindOutPersonsAge(ctx, *johnDoe)
+				age, err := repo.FindOutPersonsAge(ctx, johnDoe.FullName())
 
 				So(age, ShouldBeNil)
 				So(err, ShouldBeNil)
