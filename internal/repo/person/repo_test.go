@@ -6,6 +6,7 @@ import (
 	vo "person-details-service/internal/domain/person/valueobject"
 	repos "person-details-service/internal/repo/person"
 	"testing"
+	"time"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -24,8 +25,9 @@ func TestPersonRepo(t *testing.T) {
 			age, _ := vo.NewAge(28)
 			gender, _ := vo.NewGender("male")
 			nationality, _ := vo.NewNationality("asdfas")
+			now := time.Now()
 
-			johnDoe := person.CreatePerson(id, *name, *surname, patronymic)
+			johnDoe := person.CreatePerson(id, *name, *surname, patronymic, now)
 
 			johnDoe.SpecifyAge(age)
 			johnDoe.SpecifyGender(gender)

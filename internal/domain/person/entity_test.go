@@ -4,6 +4,7 @@ import (
 	"person-details-service/internal/domain/person"
 	vo "person-details-service/internal/domain/person/valueobject"
 	"testing"
+	"time"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -19,8 +20,9 @@ func TestPerson(t *testing.T) {
 			name, _ := vo.NewName(n)
 			surname, _ := vo.NewName(s)
 			patronymic := vo.NewPatronymic(p)
+			now := time.Now()
 
-			johnDoe := person.CreatePerson(id, *name, *surname, patronymic)
+			johnDoe := person.CreatePerson(id, *name, *surname, patronymic, now)
 
 			So(johnDoe, ShouldNotBeNil)
 			So(johnDoe.ID().Equals(id), ShouldBeTrue)
@@ -30,6 +32,8 @@ func TestPerson(t *testing.T) {
 			So(johnDoe.Age(), ShouldBeNil)
 			So(johnDoe.Gender(), ShouldBeNil)
 			So(johnDoe.Nationality(), ShouldBeNil)
+			So(johnDoe.CreatedAt().Nanosecond(), ShouldEqual, now.Nanosecond())
+			So(johnDoe.UpdatedAt(), ShouldBeNil)
 
 			Convey("Get full name", func() {
 				So(johnDoe.FullName().Value(), ShouldEqual, "John Doe")

@@ -6,6 +6,7 @@ import (
 	"person-details-service/internal/domain/person/valueobject"
 	repos "person-details-service/internal/repo/age"
 	"testing"
+	"time"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -21,7 +22,8 @@ func TestAgeRepo(t *testing.T) {
 			name, _ := person_vo.NewName("John")
 			surname, _ := person_vo.NewName("Doe")
 			patronymic := person_vo.NewPatronymic("")
-			johnDoe := person.CreatePerson(id, *name, *surname, patronymic)
+			now := time.Now()
+			johnDoe := person.CreatePerson(id, *name, *surname, patronymic, now)
 
 			age, err := repo.FindOutPersonsAge(ctx, johnDoe.FullName())
 
@@ -36,7 +38,8 @@ func TestAgeRepo(t *testing.T) {
 			name, _ := person_vo.NewName("John")
 			surname, _ := person_vo.NewName("Doe Jr")
 			patronymic := person_vo.NewPatronymic("")
-			johnDoe := person.CreatePerson(id, *name, *surname, patronymic)
+			now := time.Now()
+			johnDoe := person.CreatePerson(id, *name, *surname, patronymic, now)
 
 			age, err := repo.FindOutPersonsAge(ctx, johnDoe.FullName())
 

@@ -2,6 +2,7 @@ package person
 
 import (
 	vo "person-details-service/internal/domain/person/valueobject"
+	"time"
 )
 
 type Person struct {
@@ -12,6 +13,8 @@ type Person struct {
 	age         *vo.Age
 	gender      *vo.Gender
 	nationality *vo.Nationality
+	createdAt   time.Time
+	updatedAt   *time.Time
 }
 
 func CreatePerson(
@@ -19,6 +22,7 @@ func CreatePerson(
 	name vo.Name,
 	surname vo.Name,
 	patronymic *vo.Patronymic,
+	now time.Time,
 ) *Person {
 	return &Person{
 		id:          id,
@@ -28,6 +32,8 @@ func CreatePerson(
 		age:         nil,
 		gender:      nil,
 		nationality: nil,
+		createdAt:   now,
+		updatedAt:   nil,
 	}
 }
 
@@ -61,6 +67,14 @@ func (p *Person) Gender() *vo.Gender {
 
 func (p *Person) Nationality() *vo.Nationality {
 	return p.nationality
+}
+
+func (p *Person) CreatedAt() time.Time {
+	return p.createdAt
+}
+
+func (p *Person) UpdatedAt() *time.Time {
+	return p.updatedAt
 }
 
 func (p *Person) SpecifyAge(age *vo.Age) {

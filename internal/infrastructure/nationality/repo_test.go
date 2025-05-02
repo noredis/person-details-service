@@ -35,8 +35,9 @@ func TestRealNationalityRepository(t *testing.T) {
 				name, _ := person_vo.NewName("John")
 				surname, _ := person_vo.NewName("Doe")
 				patronymic := person_vo.NewPatronymic("")
+				now := time.Now()
 
-				johnDoe := person.CreatePerson(id, *name, *surname, patronymic)
+				johnDoe := person.CreatePerson(id, *name, *surname, patronymic, now)
 				nationality, err := repo.FindOutPersonsNationality(ctx, johnDoe.FullName())
 
 				So(nationality, ShouldNotBeNil)
@@ -50,8 +51,9 @@ func TestRealNationalityRepository(t *testing.T) {
 				name, _ := person_vo.NewName("asdfsdfsdfasdfasdfasdfsadfsafsdfasdfasdfasdfasdf")
 				surname, _ := person_vo.NewName("asdfsdfsdfkljasdlfkasjdflkajsldfkjas;ldkfjasdlf")
 				patronymic := person_vo.NewPatronymic("")
+				now := time.Now()
 
-				johnDoe := person.CreatePerson(id, *name, *surname, patronymic)
+				johnDoe := person.CreatePerson(id, *name, *surname, patronymic, now)
 				nationality, err := repo.FindOutPersonsNationality(ctx, johnDoe.FullName())
 
 				So(nationality, ShouldBeNil)
