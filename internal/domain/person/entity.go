@@ -9,6 +9,7 @@ type Person struct {
 	surname    vo.Name
 	patronymic *vo.Patronymic
 	age        *vo.Age
+	gender     *vo.Gender
 }
 
 func CreatePerson(name vo.Name, surname vo.Name, patronymic *vo.Patronymic) *Person {
@@ -17,6 +18,7 @@ func CreatePerson(name vo.Name, surname vo.Name, patronymic *vo.Patronymic) *Per
 		surname:    surname,
 		patronymic: patronymic,
 		age:        nil,
+		gender:     nil,
 	}
 }
 
@@ -40,6 +42,14 @@ func (p *Person) Age() *vo.Age {
 	return p.age
 }
 
+func (p *Person) Gender() *vo.Gender {
+	return p.gender
+}
+
 func (p *Person) SpecifyAge(age *vo.Age) {
 	p.age = age
+}
+
+func (p *Person) SpecifyGender(gender *vo.Gender) {
+	p.gender = gender
 }
