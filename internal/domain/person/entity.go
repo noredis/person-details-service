@@ -5,20 +5,22 @@ import (
 )
 
 type Person struct {
-	name       vo.Name
-	surname    vo.Name
-	patronymic *vo.Patronymic
-	age        *vo.Age
-	gender     *vo.Gender
+	name        vo.Name
+	surname     vo.Name
+	patronymic  *vo.Patronymic
+	age         *vo.Age
+	gender      *vo.Gender
+	nationality *vo.Nationality
 }
 
 func CreatePerson(name vo.Name, surname vo.Name, patronymic *vo.Patronymic) *Person {
 	return &Person{
-		name:       name,
-		surname:    surname,
-		patronymic: patronymic,
-		age:        nil,
-		gender:     nil,
+		name:        name,
+		surname:     surname,
+		patronymic:  patronymic,
+		age:         nil,
+		gender:      nil,
+		nationality: nil,
 	}
 }
 
@@ -46,10 +48,18 @@ func (p *Person) Gender() *vo.Gender {
 	return p.gender
 }
 
+func (p *Person) Nationality() *vo.Nationality {
+	return p.nationality
+}
+
 func (p *Person) SpecifyAge(age *vo.Age) {
 	p.age = age
 }
 
 func (p *Person) SpecifyGender(gender *vo.Gender) {
 	p.gender = gender
+}
+
+func (p *Person) SpecifyNationality(nationality *vo.Nationality) {
+	p.nationality = nationality
 }

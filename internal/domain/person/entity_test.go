@@ -27,6 +27,7 @@ func TestPerson(t *testing.T) {
 			So(johnDoe.Patronymic(), ShouldBeNil)
 			So(johnDoe.Age(), ShouldBeNil)
 			So(johnDoe.Gender(), ShouldBeNil)
+			So(johnDoe.Nationality(), ShouldBeNil)
 
 			Convey("Get full name", func() {
 				So(johnDoe.FullName().Value(), ShouldEqual, "John Doe")
@@ -65,6 +66,24 @@ func TestPerson(t *testing.T) {
 					johnDoe.SpecifyGender(gender)
 
 					So(johnDoe.Gender(), ShouldBeNil)
+				})
+			})
+
+			Convey("Specify nationality", func() {
+				Convey("Non-nil nationality", func() {
+					nationality, _ := vo.NewNationality("US")
+
+					johnDoe.SpecifyNationality(nationality)
+
+					So(johnDoe.Nationality().Equals(*nationality), ShouldBeTrue)
+				})
+
+				Convey("Nil nationality", func() {
+					nationality, _ := vo.NewNationality("dfsadfasdf")
+
+					johnDoe.SpecifyNationality(nationality)
+
+					So(johnDoe.Nationality(), ShouldBeNil)
 				})
 			})
 		})
