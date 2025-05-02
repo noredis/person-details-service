@@ -5,6 +5,7 @@ import (
 )
 
 type Person struct {
+	id          vo.PersonID
 	name        vo.Name
 	surname     vo.Name
 	patronymic  *vo.Patronymic
@@ -13,8 +14,14 @@ type Person struct {
 	nationality *vo.Nationality
 }
 
-func CreatePerson(name vo.Name, surname vo.Name, patronymic *vo.Patronymic) *Person {
+func CreatePerson(
+	id vo.PersonID,
+	name vo.Name,
+	surname vo.Name,
+	patronymic *vo.Patronymic,
+) *Person {
 	return &Person{
+		id:          id,
 		name:        name,
 		surname:     surname,
 		patronymic:  patronymic,
@@ -22,6 +29,10 @@ func CreatePerson(name vo.Name, surname vo.Name, patronymic *vo.Patronymic) *Per
 		gender:      nil,
 		nationality: nil,
 	}
+}
+
+func (p *Person) ID() vo.PersonID {
+	return p.id
 }
 
 func (p *Person) Name() vo.Name {

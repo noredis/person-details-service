@@ -17,10 +17,11 @@ func TestNationalityRepo(t *testing.T) {
 		Convey("Get nationality", func() {
 			ctx := context.Background()
 
+			id := person_vo.NewPersonID()
 			name, _ := person_vo.NewName("John")
 			surname, _ := person_vo.NewName("Doe")
 			patronymic := person_vo.NewPatronymic("")
-			johnDoe := person.CreatePerson(*name, *surname, patronymic)
+			johnDoe := person.CreatePerson(id, *name, *surname, patronymic)
 
 			nationality, err := repo.FindOutPersonsNationality(ctx, johnDoe.FullName())
 
@@ -31,10 +32,11 @@ func TestNationalityRepo(t *testing.T) {
 		Convey("Get nil nationality", func() {
 			ctx := context.Background()
 
+			id := person_vo.NewPersonID()
 			name, _ := person_vo.NewName("John")
 			surname, _ := person_vo.NewName("Doe Jr")
 			patronymic := person_vo.NewPatronymic("")
-			johnDoe := person.CreatePerson(*name, *surname, patronymic)
+			johnDoe := person.CreatePerson(id, *name, *surname, patronymic)
 
 			nationality, err := repo.FindOutPersonsNationality(ctx, johnDoe.FullName())
 

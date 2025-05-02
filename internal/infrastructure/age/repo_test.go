@@ -31,11 +31,12 @@ func TestRealAgeRepository(t *testing.T) {
 			Convey("Get person's age", func() {
 				ctx := context.Background()
 
+				id := person_vo.NewPersonID()
 				name, _ := person_vo.NewName("John")
 				surname, _ := person_vo.NewName("Doe")
 				patronymic := person_vo.NewPatronymic("")
 
-				johnDoe := person.CreatePerson(*name, *surname, patronymic)
+				johnDoe := person.CreatePerson(id, *name, *surname, patronymic)
 				age, err := repo.FindOutPersonsAge(ctx, johnDoe.FullName())
 
 				So(age, ShouldNotBeNil)
@@ -45,11 +46,12 @@ func TestRealAgeRepository(t *testing.T) {
 			Convey("Get nil person's age", func() {
 				ctx := context.Background()
 
+				id := person_vo.NewPersonID()
 				name, _ := person_vo.NewName("asdfsdfsdfasdfasdfasdfsadfsafsdfasdfasdfasdfasdf")
 				surname, _ := person_vo.NewName("asdfsdfsdfkljasdlfkasjdflkajsldfkjas;ldkfjasdlf")
 				patronymic := person_vo.NewPatronymic("")
 
-				johnDoe := person.CreatePerson(*name, *surname, patronymic)
+				johnDoe := person.CreatePerson(id, *name, *surname, patronymic)
 				age, err := repo.FindOutPersonsAge(ctx, johnDoe.FullName())
 
 				So(age, ShouldBeNil)

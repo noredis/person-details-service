@@ -17,6 +17,7 @@ func TestPersonRepo(t *testing.T) {
 		Convey("Save person", func() {
 			ctx := context.Background()
 
+			id := vo.NewPersonID()
 			name, _ := vo.NewName("John")
 			surname, _ := vo.NewName("Doe")
 			patronymic := vo.NewPatronymic("")
@@ -24,7 +25,7 @@ func TestPersonRepo(t *testing.T) {
 			gender, _ := vo.NewGender("male")
 			nationality, _ := vo.NewNationality("asdfas")
 
-			johnDoe := person.CreatePerson(*name, *surname, patronymic)
+			johnDoe := person.CreatePerson(id, *name, *surname, patronymic)
 
 			johnDoe.SpecifyAge(age)
 			johnDoe.SpecifyGender(gender)

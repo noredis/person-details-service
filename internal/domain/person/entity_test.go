@@ -15,13 +15,15 @@ func TestPerson(t *testing.T) {
 			s := "Doe"
 			p := ""
 
+			id := vo.NewPersonID()
 			name, _ := vo.NewName(n)
 			surname, _ := vo.NewName(s)
 			patronymic := vo.NewPatronymic(p)
 
-			johnDoe := person.CreatePerson(*name, *surname, patronymic)
+			johnDoe := person.CreatePerson(id, *name, *surname, patronymic)
 
 			So(johnDoe, ShouldNotBeNil)
+			So(johnDoe.ID().Equals(id), ShouldBeTrue)
 			So(johnDoe.Name().Equals(*name), ShouldBeTrue)
 			So(johnDoe.Surname().Equals(*surname), ShouldBeTrue)
 			So(johnDoe.Patronymic(), ShouldBeNil)

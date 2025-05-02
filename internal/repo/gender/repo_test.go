@@ -17,10 +17,11 @@ func TestGenderRepo(t *testing.T) {
 		Convey("Get gender", func() {
 			ctx := context.Background()
 
+			id := person_vo.NewPersonID()
 			name, _ := person_vo.NewName("John")
 			surname, _ := person_vo.NewName("Doe")
 			patronymic := person_vo.NewPatronymic("")
-			johnDoe := person.CreatePerson(*name, *surname, patronymic)
+			johnDoe := person.CreatePerson(id, *name, *surname, patronymic)
 
 			gender, err := repo.FindOutPersonsGender(ctx, johnDoe.FullName())
 
@@ -31,10 +32,11 @@ func TestGenderRepo(t *testing.T) {
 		Convey("Get nil gender", func() {
 			ctx := context.Background()
 
+			id := person_vo.NewPersonID()
 			name, _ := person_vo.NewName("John")
 			surname, _ := person_vo.NewName("Doe Jr")
 			patronymic := person_vo.NewPatronymic("")
-			johnDoe := person.CreatePerson(*name, *surname, patronymic)
+			johnDoe := person.CreatePerson(id, *name, *surname, patronymic)
 
 			gender, err := repo.FindOutPersonsGender(ctx, johnDoe.FullName())
 
