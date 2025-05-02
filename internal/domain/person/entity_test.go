@@ -25,9 +25,28 @@ func TestPerson(t *testing.T) {
 			So(johnDoe.Name().Equals(*name), ShouldBeTrue)
 			So(johnDoe.Surname().Equals(*surname), ShouldBeTrue)
 			So(johnDoe.Patronymic(), ShouldBeNil)
+			So(johnDoe.Age(), ShouldBeNil)
 
 			Convey("Get full name", func() {
 				So(johnDoe.FullName().Value(), ShouldEqual, "John Doe")
+			})
+
+			Convey("Specify age", func() {
+				Convey("Non-nil age", func() {
+					age, _ := vo.NewAge(38)
+
+					johnDoe.SpecifyAge(age)
+
+					So(johnDoe.Age().Equals(*age), ShouldBeTrue)
+				})
+
+				Convey("Nil age", func() {
+					age, _ := vo.NewAge(-1)
+
+					johnDoe.SpecifyAge(age)
+
+					So(johnDoe.Age(), ShouldBeNil)
+				})
 			})
 		})
 	})
