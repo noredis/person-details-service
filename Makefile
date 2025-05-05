@@ -6,7 +6,7 @@ utest:
 
 .PHONY: lint
 lint:
-	@golangci-lint run
+	@cd server/app && golangci-lint run
 
 .PHONY: itest
 itest:
