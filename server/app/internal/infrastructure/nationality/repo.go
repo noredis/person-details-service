@@ -12,6 +12,8 @@ import (
 	"time"
 )
 
+const BASE_URL = "https://api.nationalize.io"
+
 type country struct {
 	CountryID string `json:"country_id"`
 }

@@ -12,6 +12,8 @@ import (
 	"time"
 )
 
+const BASE_URL = "https://api.agify.io"
+
 type ageResponse struct {
 	Age *int `json:"age"`
 }

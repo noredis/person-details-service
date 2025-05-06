@@ -12,6 +12,8 @@ import (
 	"time"
 )
 
+const BASE_URL = "https://api.genderize.io"
+
 type genderResponse struct {
 	Gender *string `json:"gender"`
 }

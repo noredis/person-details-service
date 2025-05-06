@@ -23,7 +23,7 @@ func TestRealNationalityRepository(t *testing.T) {
 		}))
 
 		Convey("Valid url", func() {
-			repo, err := infra.NewNationalityRepository(logger, "https://api.nationalize.io", 10*time.Second)
+			repo, err := infra.NewNationalityRepository(logger, infra.BASE_URL, 10*time.Second)
 
 			So(repo, ShouldNotBeNil)
 			So(err, ShouldBeNil)

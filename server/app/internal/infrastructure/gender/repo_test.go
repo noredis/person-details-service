@@ -23,7 +23,7 @@ func TestRealGenderRepository(t *testing.T) {
 		}))
 
 		Convey("Valid url", func() {
-			repo, err := infra.NewGenderRepository(logger, "https://api.genderize.io", 10*time.Second)
+			repo, err := infra.NewGenderRepository(logger, infra.BASE_URL, 10*time.Second)
 
 			So(repo, ShouldNotBeNil)
 			So(err, ShouldBeNil)

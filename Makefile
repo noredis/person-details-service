@@ -23,3 +23,7 @@ test-env-down:
 .PHONY: fmt
 fmt:
 	@cd server/app && go fmt ./...
+
+.PHONY: run
+run:
+	@docker compose -f docker-compose-pds.yml up 

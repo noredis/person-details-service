@@ -12,8 +12,6 @@ RUN go mod download
 
 COPY app ./
 
-COPY configs ./configs
-
 RUN go build -o ./bin/app cmd/app/app.go
 
 FROM alpine AS runner
@@ -21,7 +19,5 @@ FROM alpine AS runner
 COPY --from=builder /usr/local/src/bin/app /
 
 COPY --from=builder /usr/local/src/pds.env /
-
-COPY --from=builder /usr/local/src/configs /configs
 
 CMD ["/app"]

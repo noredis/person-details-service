@@ -23,7 +23,7 @@ func TestRealAgeRepository(t *testing.T) {
 		}))
 
 		Convey("Valid url", func() {
-			repo, err := infra.NewAgeRepository(logger, "https://api.agify.io", 10*time.Second)
+			repo, err := infra.NewAgeRepository(logger, infra.BASE_URL, 10*time.Second)
 
 			So(repo, ShouldNotBeNil)
 			So(err, ShouldBeNil)

@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  server:
+    build: server/
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    depends_on:
+      - postgres
+      - migrate
+
+  postgres:
+    container_name: personsdb
+    image: postgres:15
+    command: postgres -c 'max_connections=1000'
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 1s
+      timeout: 5s
+      retries: 3
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    volumes:
+      - pdsData:/var/lib/postgresql/data
+
+  migrate:
+    image: migrate/migrate:4
+    command: >
+      -source 'file:///migrations'
+      -database 'postgresql://${DB_USER}:${DB_PASSWORD}@postgres:${DB_PORT}/${DB_NAME}?sslmode=${DB_SSL_MODE}' up
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    volumes:
+      - ./migrations:/migrations:ro
+
+volumes:
+  pdsData:
