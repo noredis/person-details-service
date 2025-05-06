@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
+	"net/http"
 	"os"
 	"person-details-service/internal/app/person"
 	"person-details-service/internal/infrastructure/age"
@@ -13,8 +15,6 @@ import (
 	"person-details-service/pkg/postgres"
 	"strconv"
 	"time"
-	"fmt"
-	"net/http"
 
 	"github.com/joho/godotenv"
 	"github.com/julienschmidt/httprouter"
