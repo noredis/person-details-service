@@ -1,0 +1,86 @@
+package person_app_test
+
+import (
+	"bytes"
+	"context"
+	"log/slog"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	app "person-details-service/internal/app/person"
+	"person-details-service/internal/repo/age"
+	"person-details-service/internal/repo/gender"
+	"person-details-service/internal/repo/nationality"
+	"person-details-service/internal/repo/person"
+	service "person-details-service/internal/service/person"
+	"testing"
+
+	"github.com/julienschmidt/httprouter"
+	. "github.com/smartystreets/goconvey/convey"
+)
+
+func TestPersonHandler(t *testing.T) {
+	Convey("Test person handler", t, func() {
+		ctx := context.Background()
+		logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+			Level: slog.LevelDebug,
+		}))
+
+		ageRepo := age_repo.FakeAgeRepository{}
+		genderRepo := gender_repo.FakeGenderRepository{}
+		nationalityRepo := nationality_repo.FakeNationalityRepository{}
+		personRepo := person_repo.NewFakePersonRepository()
+
+		personService := service.NewPersonService(ageRepo, genderRepo, nationalityRepo, personRepo)
+		personHandler := app.NewPersonHandler(ctx, personService, logger)
+
+		Convey("Register person handler", func() {
+			router := httprouter.New()
+			personHandler.Register(router)
+
+			Convey("Create person api method", func() {
+				input := []byte(`
+					{
+						"name": "John",
+						"surname": "Doe",
+						"Patronymic": "John"
+					}
+				`)
+
+				req := httptest.NewRequest(http.MethodPost, app.URL, bytes.NewBuffer(input))
+				w := httptest.NewRecorder()
+
+				personHandler.CreatePerson(w, req)
+
+				So(w.Code, ShouldEqual, http.StatusCreated)
+			})
+
+			Convey("Create empty person", func() {
+				input := []byte("")
+
+				req := httptest.NewRequest(http.MethodPost, app.URL, bytes.NewBuffer(input))
+				w := httptest.NewRecorder()
+
+				personHandler.CreatePerson(w, req)
+
+				So(w.Code, ShouldEqual, http.StatusBadRequest)
+			})
+
+			Convey("Create person with empty fields", func() {
+				input := []byte(`
+					{
+						"name": "",
+						"surname": ""
+					}
+				`)
+
+				req := httptest.NewRequest(http.MethodPost, app.URL, bytes.NewBuffer(input))
+				w := httptest.NewRecorder()
+
+				personHandler.CreatePerson(w, req)
+
+				So(w.Code, ShouldEqual, http.StatusBadRequest)
+			})
+		})
+	})
+}
