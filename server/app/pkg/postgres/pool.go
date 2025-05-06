@@ -18,7 +18,7 @@ type PgClient interface {
 	BeginTx(ctx context.Context, opts pgx.TxOptions) (pgx.Tx, error)
 }
 
-func NewPool(ctx context.Context, pgCfg pgConfig, logger Logger) (*pgxpool.Pool, error) {
+func NewPool(ctx context.Context, pgCfg PgConfig, logger Logger) (*pgxpool.Pool, error) {
 	const op = "postgres.NewPool: %v"
 
 	dsn := fmt.Sprintf(

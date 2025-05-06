@@ -2,7 +2,7 @@ package postgres
 
 import "time"
 
-type pgConfig struct {
+type PgConfig struct {
 	Username     string
 	Password     string
 	Host         string
@@ -24,8 +24,8 @@ func NewPgConfig(
 	maxAttempts int,
 	maxDelay time.Duration,
 	sslMode string,
-) pgConfig {
-	return pgConfig{
+) PgConfig {
+	return PgConfig{
 		Username:     username,
 		Password:     password,
 		Host:         host,
