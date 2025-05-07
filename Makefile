@@ -27,3 +27,7 @@ fmt:
 .PHONY: run
 run:
 	@docker compose -f docker-compose-pds.yml up 
+
+.PHONY: brun
+brun:
+	@docker compose -f docker-compose-pds.yml up --build
