@@ -93,5 +93,29 @@ func TestPerson(t *testing.T) {
 				})
 			})
 		})
+
+		Convey("Restore person", func() {
+			id := vo.NewPersonID()
+			name, _ := vo.NewName("John")
+			surname, _ := vo.NewName("Doe")
+			patronymic := vo.NewPatronymic("")
+			age, _ := vo.NewAge(38)
+			gender, _ := vo.NewGender("male")
+			nationality, _ := vo.NewNationality("CA")
+			createdAt := time.Now()
+			var updatedAt *time.Time
+
+			johnDoe := person.RestorePerson(id, *name, *surname, patronymic, age, gender, nationality, createdAt, updatedAt)
+
+			So(johnDoe.ID().Equals(id), ShouldBeTrue)
+			So(johnDoe.Name().Equals(*name), ShouldBeTrue)
+			So(johnDoe.Surname().Equals(*surname), ShouldBeTrue)
+			So(johnDoe.Patronymic(), ShouldBeNil)
+			So(johnDoe.Age().Equals(*age), ShouldBeTrue)
+			So(johnDoe.Gender().Equals(*gender), ShouldBeTrue)
+			So(johnDoe.Nationality().Equals(*nationality), ShouldBeTrue)
+			So(johnDoe.CreatedAt().Nanosecond(), ShouldEqual, createdAt.Nanosecond())
+			So(johnDoe.UpdatedAt(), ShouldBeNil)
+		})
 	})
 }
