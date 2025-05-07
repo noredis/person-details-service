@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"person-details-service/internal/domain/person"
+	vo "person-details-service/internal/domain/person/valueobject"
 	"person-details-service/pkg/postgres"
 )
 
@@ -43,4 +44,66 @@ func (r PersonRepository) SavePerson(ctx context.Context, p person.Person) error
 	}
 
 	return nil
+}
+
+func (r PersonRepository) GetPersonByID(ctx context.Context, id vo.PersonID) (*person.Person, error) {
+	const op = "PersonRepository.GetPersonByID: %w"
+
+	const query = `
+        SELECT id, name, surname, patronymic, age, gender, nationality, created_at, updated_at
+        FROM persons
+        WHERE id = $1
+    `
+
+	var p PersonDTO
+
+	row := r.db.QueryRow(ctx, query, id.Value())
+
+	err := row.Scan(&p.ID, &p.Name, &p.Surname, &p.Patronymic, &p.Age, &p.Gender, &p.Nationality, &p.CreatedAt, &p.UpdatedAt)
+	if err != nil {
+		return nil, fmt.Errorf(op, err)
+	}
+
+	name, err := vo.NewName(p.Name)
+	if err != nil {
+		return nil, fmt.Errorf(op, err)
+	}
+
+	surname, err := vo.NewName(p.Surname)
+	if err != nil {
+		return nil, fmt.Errorf(op, err)
+	}
+
+	var patronymic *vo.Patronymic
+	if p.Patronymic.Valid {
+		patronymic = vo.NewPatronymic(p.Patronymic.String)
+	}
+
+	var age *vo.Age
+	if p.Age.Valid {
+		age, err = vo.NewAge(int(p.Age.Int16))
+		if err != nil {
+			return nil, fmt.Errorf(op, err)
+		}
+	}
+
+	var gender *vo.Gender
+	if p.Gender.Valid {
+		gender, err = vo.NewGender(p.Gender.String)
+		if err != nil {
+			return nil, fmt.Errorf(op, err)
+		}
+	}
+
+	var nationality *vo.Nationality
+	if p.Nationality.Valid {
+		nationality, err = vo.NewNationality(p.Nationality.String)
+		if err != nil {
+			return nil, fmt.Errorf(op, err)
+		}
+	}
+
+	restoredPerson := person.RestorePerson(id, *name, *surname, patronymic, age, gender, nationality, p.CreatedAt, p.UpdatedAt)
+
+	return restoredPerson, nil
 }

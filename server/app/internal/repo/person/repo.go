@@ -9,7 +9,7 @@ import (
 
 type PersonRepository interface {
 	SavePerson(ctx context.Context, p person.Person) error
-	GetPersonByID(ctx context.Context, id vo.PersonID) *person.Person
+	GetPersonByID(ctx context.Context, id vo.PersonID) (*person.Person, error)
 }
 
 type FakePersonRepository struct {
@@ -26,15 +26,15 @@ func (r *FakePersonRepository) SavePerson(ctx context.Context, p person.Person) 
 	return nil
 }
 
-func (r *FakePersonRepository) GetPersonByID(ctx context.Context, id vo.PersonID) *person.Person {
+func (r *FakePersonRepository) GetPersonByID(ctx context.Context, id vo.PersonID) (*person.Person, error) {
 	idx := slices.IndexFunc(r.persons, func(p person.Person) bool {
 		return p.ID().Equals(id)
 	})
 
 	if idx < 0 {
-		return nil
+		return nil, nil
 	}
 
 	p := r.persons[idx]
-	return &p
+	return &p, nil
 }

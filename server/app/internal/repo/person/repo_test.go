@@ -38,9 +38,10 @@ func TestPersonRepo(t *testing.T) {
 			So(err, ShouldBeNil)
 
 			Convey("Get saved person", func() {
-				restoredJohnDoe := repo.GetPersonByID(ctx, id)
+				restoredJohnDoe, err := repo.GetPersonByID(ctx, id)
 
 				So(restoredJohnDoe.ID().Equals(id), ShouldBeTrue)
+				So(err, ShouldBeNil)
 			})
 		})
 
@@ -49,9 +50,10 @@ func TestPersonRepo(t *testing.T) {
 
 			id := vo.NewPersonID()
 
-			who := repo.GetPersonByID(ctx, id)
+			who, err := repo.GetPersonByID(ctx, id)
 
 			So(who, ShouldBeNil)
+			So(err, ShouldBeNil)
 		})
 	})
 }
