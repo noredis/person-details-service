@@ -140,7 +140,7 @@ func TestPersonService(t *testing.T) {
 			person, err := personService.FindPerson(ctx, id.Value())
 
 			So(person, ShouldBeNil)
-			So(err, ShouldBeNil)
+			So(err, ShouldNotBeNil)
 		})
 
 		Convey("Find person with invalid id", func() {

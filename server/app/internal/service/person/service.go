@@ -134,7 +134,7 @@ func (s PersonService) UpdatePerson(ctx context.Context, id string, updatePerson
 	return dto.MapFromPerson(*p), nil
 }
 
-func (s PersonService) FindPerson(ctx context.Context, id string) (*person.Person, error) {
+func (s PersonService) FindPerson(ctx context.Context, id string) (*dto.PersonDTO, error) {
 	const op = "PersonService.FindPerson: %w"
 
 	pID, err := vo.ParsePersonID(id)
@@ -147,5 +147,5 @@ func (s PersonService) FindPerson(ctx context.Context, id string) (*person.Perso
 		return nil, fmt.Errorf(op, err)
 	}
 
-	return p, nil
+	return dto.MapFromPerson(*p), nil
 }
