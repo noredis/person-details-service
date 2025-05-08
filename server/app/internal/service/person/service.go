@@ -81,3 +81,55 @@ func (s PersonService) CreatePerson(ctx context.Context, createPersonDTO dto.Cre
 
 	return dto.MapFromPerson(*p), nil
 }
+
+func (s PersonService) UpdatePerson(ctx context.Context, id string, updatePersonDTO dto.UpdatePersonDTO) (*dto.PersonDTO, error) {
+	const op = "PersonService.UpdatePerson: %w"
+
+	pID, err := vo.ParsePersonID(id)
+	if err != nil {
+		return nil, fmt.Errorf(op, err)
+	}
+
+	p, err := s.personRepo.GetPersonByID(ctx, *pID)
+	if err != nil {
+		return nil, fmt.Errorf(op, err)
+	}
+
+	name, err := vo.NewName(updatePersonDTO.Name)
+	if err != nil {
+		return nil, fmt.Errorf(op, err)
+	}
+
+	surname, err := vo.NewName(updatePersonDTO.Surname)
+	if err != nil {
+		return nil, fmt.Errorf(op, err)
+	}
+
+	patronymic := vo.NewPatronymic(updatePersonDTO.Patronymic)
+
+	age, err := vo.NewAge(updatePersonDTO.Age)
+	if err != nil && updatePersonDTO.Age != 0 {
+		return nil, fmt.Errorf(op, err)
+	}
+
+	gender, err := vo.NewGender(updatePersonDTO.Gender)
+	if err != nil && updatePersonDTO.Gender != "" {
+		return nil, fmt.Errorf(op, err)
+	}
+
+	nationality, err := vo.NewNationality(updatePersonDTO.Nationality)
+	if err != nil && updatePersonDTO.Nationality != "" {
+		return nil, fmt.Errorf(op, err)
+	}
+
+	now := time.Now()
+
+	p.EditPersonalInformation(*name, *surname, patronymic, age, gender, nationality, now)
+
+	err = s.personRepo.UpdatePerson(ctx, *p)
+	if err != nil {
+		return nil, fmt.Errorf(op, err)
+	}
+
+	return dto.MapFromPerson(*p), nil
+}

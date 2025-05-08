@@ -36,6 +36,30 @@ func TestPersonRepo(t *testing.T) {
 			err := repo.SavePerson(ctx, *johnDoe)
 
 			So(err, ShouldBeNil)
+
+			Convey("Get saved person", func() {
+				restoredJohnDoe, err := repo.GetPersonByID(ctx, id)
+
+				So(restoredJohnDoe.ID().Equals(id), ShouldBeTrue)
+				So(err, ShouldBeNil)
+			})
+
+			Convey("Update person", func() {
+				err = repo.UpdatePerson(ctx, *johnDoe)
+
+				So(err, ShouldBeNil)
+			})
+		})
+
+		Convey("Get non-existent person", func() {
+			ctx := context.Background()
+
+			id := vo.NewPersonID()
+
+			who, err := repo.GetPersonByID(ctx, id)
+
+			So(who, ShouldBeNil)
+			So(err, ShouldBeNil)
 		})
 	})
 }

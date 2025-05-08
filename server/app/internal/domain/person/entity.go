@@ -37,6 +37,30 @@ func CreatePerson(
 	}
 }
 
+func RestorePerson(
+	id vo.PersonID,
+	name vo.Name,
+	surname vo.Name,
+	patronymic *vo.Patronymic,
+	age *vo.Age,
+	gender *vo.Gender,
+	nationality *vo.Nationality,
+	createdAt time.Time,
+	updatedAt *time.Time,
+) *Person {
+	return &Person{
+		id:          id,
+		name:        name,
+		surname:     surname,
+		patronymic:  patronymic,
+		age:         age,
+		gender:      gender,
+		nationality: nationality,
+		createdAt:   createdAt,
+		updatedAt:   updatedAt,
+	}
+}
+
 func (p *Person) ID() vo.PersonID {
 	return p.id
 }
@@ -87,4 +111,23 @@ func (p *Person) SpecifyGender(gender *vo.Gender) {
 
 func (p *Person) SpecifyNationality(nationality *vo.Nationality) {
 	p.nationality = nationality
+}
+
+func (p *Person) EditPersonalInformation(
+	name vo.Name,
+	surname vo.Name,
+	patronymic *vo.Patronymic,
+	age *vo.Age,
+	gender *vo.Gender,
+	nationality *vo.Nationality,
+	now time.Time,
+) {
+	p.name = name
+	p.surname = surname
+	p.patronymic = patronymic
+	p.age = age
+	p.gender = gender
+	p.nationality = nationality
+	updatedAt := now
+	p.updatedAt = &updatedAt
 }
