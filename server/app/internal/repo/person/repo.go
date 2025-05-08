@@ -48,7 +48,7 @@ func (r *FakePersonRepository) UpdatePerson(ctx context.Context, p person.Person
 	})
 
 	if idx < 0 {
-		return fmt.Errorf("err")
+		return nil
 	}
 
 	r.persons[idx] = p

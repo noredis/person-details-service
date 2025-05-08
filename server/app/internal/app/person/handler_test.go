@@ -86,6 +86,47 @@ func TestPersonHandler(t *testing.T) {
 					So(w.Code, ShouldEqual, http.StatusOK)
 				})
 
+				Convey("Update empty person", func() {
+					input := []byte("")
+
+					personID := personResponse.ID
+
+					req := httptest.NewRequest(http.MethodPut, fmt.Sprintf("/api/v1/persons/%s", personID), bytes.NewBuffer(input))
+					w := httptest.NewRecorder()
+
+					idParam := httprouter.Param{Key: "id", Value: personID}
+
+					params := make([]httprouter.Param, 0)
+					params = append(params, idParam)
+
+					personHandler.UpdatePerson(w, req, httprouter.Params(params))
+
+					So(w.Code, ShouldEqual, http.StatusBadRequest)
+				})
+
+				Convey("Update person with empty fields", func() {
+					input := []byte(`
+						{
+							"name": "",
+							"surname": ""
+						}
+					`)
+
+					personID := personResponse.ID
+
+					req := httptest.NewRequest(http.MethodPut, fmt.Sprintf("/api/v1/persons/%s", personID), bytes.NewBuffer(input))
+					w := httptest.NewRecorder()
+
+					idParam := httprouter.Param{Key: "id", Value: personID}
+
+					params := make([]httprouter.Param, 0)
+					params = append(params, idParam)
+
+					personHandler.UpdatePerson(w, req, httprouter.Params(params))
+
+					So(w.Code, ShouldEqual, http.StatusBadRequest)
+				})
+
 				Convey("Find person api method", func() {
 					personID := personResponse.ID
 

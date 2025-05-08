@@ -36,8 +36,8 @@ func TestGenderRepo(t *testing.T) {
 
 			id := person_vo.NewPersonID()
 			name, _ := person_vo.NewName("John")
-			surname, _ := person_vo.NewName("Doe Jr")
-			patronymic := person_vo.NewPatronymic("")
+			surname, _ := person_vo.NewName("Doe")
+			patronymic := person_vo.NewPatronymic("John")
 			now := time.Now()
 			johnDoe := person.CreatePerson(id, *name, *surname, patronymic, now)
 
@@ -45,6 +45,22 @@ func TestGenderRepo(t *testing.T) {
 
 			So(gender, ShouldBeNil)
 			So(err, ShouldBeNil)
+		})
+
+		Convey("Get error gender", func() {
+			ctx := context.Background()
+
+			id := person_vo.NewPersonID()
+			name, _ := person_vo.NewName("John")
+			surname, _ := person_vo.NewName("Doe")
+			patronymic := person_vo.NewPatronymic("2")
+			now := time.Now()
+			johnDoe := person.CreatePerson(id, *name, *surname, patronymic, now)
+
+			gender, err := repo.FindOutPersonsGender(ctx, johnDoe.FullName())
+
+			So(gender, ShouldBeNil)
+			So(err, ShouldNotBeNil)
 		})
 	})
 }

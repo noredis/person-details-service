@@ -36,8 +36,8 @@ func TestAgeRepo(t *testing.T) {
 
 			id := person_vo.NewPersonID()
 			name, _ := person_vo.NewName("John")
-			surname, _ := person_vo.NewName("Doe Jr")
-			patronymic := person_vo.NewPatronymic("")
+			surname, _ := person_vo.NewName("Doe")
+			patronymic := person_vo.NewPatronymic("John")
 			now := time.Now()
 			johnDoe := person.CreatePerson(id, *name, *surname, patronymic, now)
 
@@ -45,6 +45,22 @@ func TestAgeRepo(t *testing.T) {
 
 			So(age, ShouldBeNil)
 			So(err, ShouldBeNil)
+		})
+
+		Convey("Get error age", func() {
+			ctx := context.Background()
+
+			id := person_vo.NewPersonID()
+			name, _ := person_vo.NewName("John")
+			surname, _ := person_vo.NewName("Doe")
+			patronymic := person_vo.NewPatronymic("1")
+			now := time.Now()
+			johnDoe := person.CreatePerson(id, *name, *surname, patronymic, now)
+
+			age, err := repo.FindOutPersonsAge(ctx, johnDoe.FullName())
+
+			So(age, ShouldBeNil)
+			So(err, ShouldNotBeNil)
 		})
 	})
 }

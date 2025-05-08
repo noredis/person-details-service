@@ -25,7 +25,7 @@ func TestRealPersonRepository(t *testing.T) {
 			id := vo.NewPersonID()
 			name, _ := vo.NewName("John")
 			surname, _ := vo.NewName("Doe")
-			patronymic := vo.NewPatronymic("")
+			patronymic := vo.NewPatronymic("John")
 			age, _ := vo.NewAge(38)
 			gender, _ := vo.NewGender("male")
 			nationality, _ := vo.NewNationality("US")
@@ -47,7 +47,7 @@ func TestRealPersonRepository(t *testing.T) {
 				So(restoredJohnDoe.ID().Equals(id), ShouldBeTrue)
 				So(restoredJohnDoe.Name().Equals(*name), ShouldBeTrue)
 				So(restoredJohnDoe.Surname().Equals(*surname), ShouldBeTrue)
-				So(restoredJohnDoe.Patronymic(), ShouldBeNil)
+				So(restoredJohnDoe.Patronymic().Equals(*patronymic), ShouldBeTrue)
 				So(restoredJohnDoe.Age().Equals(*age), ShouldBeTrue)
 				So(restoredJohnDoe.Gender().Equals(*gender), ShouldBeTrue)
 				So(restoredJohnDoe.Nationality().Equals(*nationality), ShouldBeTrue)
@@ -83,6 +83,31 @@ func TestRealPersonRepository(t *testing.T) {
 					So(err, ShouldBeNil)
 				})
 			})
+		})
+
+		Convey("Update non-existent person", func() {
+			ctx := context.Background()
+			db := testingpg.NewWithIsolatedDatabase(t)
+			repo := repos.NewPersonRepository(db.DB())
+
+			id := vo.NewPersonID()
+			name, _ := vo.NewName("John")
+			surname, _ := vo.NewName("Doe")
+			patronymic := vo.NewPatronymic("John")
+			age, _ := vo.NewAge(38)
+			gender, _ := vo.NewGender("male")
+			nationality, _ := vo.NewNationality("US")
+			now := time.Now()
+
+			johnDoe := person.CreatePerson(id, *name, *surname, patronymic, now)
+
+			johnDoe.SpecifyAge(age)
+			johnDoe.SpecifyGender(gender)
+			johnDoe.SpecifyNationality(nationality)
+
+			err := repo.UpdatePerson(ctx, *johnDoe)
+
+			So(err, ShouldBeNil)
 		})
 
 		Convey("Get non-existent person", func() {
