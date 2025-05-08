@@ -24,7 +24,7 @@ func TestPersonRepo(t *testing.T) {
 			patronymic := vo.NewPatronymic("")
 			age, _ := vo.NewAge(28)
 			gender, _ := vo.NewGender("male")
-			nationality, _ := vo.NewNationality("asdfas")
+			nationality, _ := vo.NewNationality("US")
 			now := time.Now()
 
 			johnDoe := person.CreatePerson(id, *name, *surname, patronymic, now)
@@ -36,6 +36,45 @@ func TestPersonRepo(t *testing.T) {
 			err := repo.SavePerson(ctx, *johnDoe)
 
 			So(err, ShouldBeNil)
+
+			Convey("Get saved person matches all filters", func() {
+				filterOptions := repos.FilterOptions{Age: age, Gender: gender}
+
+				persons, err := repo.GetPersons(ctx, filterOptions)
+
+				So(len(persons), ShouldEqual, 1)
+				So(err, ShouldBeNil)
+			})
+
+			Convey("Get saved person not matches age filters", func() {
+				age, _ = vo.NewAge(30)
+				filterOptions := repos.FilterOptions{Age: age, Gender: gender}
+
+				persons, err := repo.GetPersons(ctx, filterOptions)
+
+				So(len(persons), ShouldEqual, 0)
+				So(err, ShouldBeNil)
+			})
+
+			Convey("Get saved person not matches gender filters", func() {
+				gender, _ = vo.NewGender("female")
+				filterOptions := repos.FilterOptions{Age: age, Gender: gender}
+
+				persons, err := repo.GetPersons(ctx, filterOptions)
+
+				So(len(persons), ShouldEqual, 0)
+				So(err, ShouldBeNil)
+			})
+
+			Convey("Get saved person not matches nationality filters", func() {
+				nationality, _ = vo.NewNationality("CA")
+				filterOptions := repos.FilterOptions{Age: age, Gender: gender, Nationality: nationality}
+
+				persons, err := repo.GetPersons(ctx, filterOptions)
+
+				So(len(persons), ShouldEqual, 0)
+				So(err, ShouldBeNil)
+			})
 
 			Convey("Get saved person", func() {
 				restoredJohnDoe, err := repo.GetPersonByID(ctx, id)

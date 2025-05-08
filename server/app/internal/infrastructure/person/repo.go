@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"person-details-service/internal/domain/person"
 	vo "person-details-service/internal/domain/person/valueobject"
+	repo "person-details-service/internal/repo/person"
 	"person-details-service/pkg/postgres"
 )
 
@@ -14,6 +15,10 @@ type PersonRepository struct {
 
 func NewPersonRepository(db postgres.PgClient) PersonRepository {
 	return PersonRepository{db}
+}
+
+func (r PersonRepository) GetPersons(ctx context.Context, filterOptions repo.FilterOptions) ([]person.Person, error) {
+	return make([]person.Person, 0), nil
 }
 
 func (r PersonRepository) SavePerson(ctx context.Context, p person.Person) error {

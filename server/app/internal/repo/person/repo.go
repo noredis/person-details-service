@@ -8,11 +8,18 @@ import (
 	"slices"
 )
 
+type FilterOptions struct {
+	Age         *vo.Age
+	Gender      *vo.Gender
+	Nationality *vo.Nationality
+}
+
 type PersonRepository interface {
 	SavePerson(ctx context.Context, p person.Person) error
 	GetPersonByID(ctx context.Context, id vo.PersonID) (*person.Person, error)
 	UpdatePerson(ctx context.Context, p person.Person) error
 	DeletePerson(ctx context.Context, id vo.PersonID) error
+	GetPersons(ctx context.Context, filterOptions FilterOptions) ([]person.Person, error)
 }
 
 type FakePersonRepository struct {
@@ -66,4 +73,32 @@ func (r *FakePersonRepository) DeletePerson(ctx context.Context, id vo.PersonID)
 
 	r.persons = slices.Delete(r.persons, idx, idx+1)
 	return nil
+}
+
+func (r *FakePersonRepository) GetPersons(ctx context.Context, filterOptions FilterOptions) ([]person.Person, error) {
+	persons := make([]person.Person, 0)
+
+	for _, p := range r.persons {
+		if matchesFilters(p, filterOptions) {
+			persons = append(persons, p)
+		}
+	}
+
+	return persons, nil
+}
+
+func matchesFilters(p person.Person, filters FilterOptions) bool {
+	if filters.Age != nil && p.Age() != nil && p.Age().Value() != filters.Age.Value() {
+		return false
+	}
+
+	if filters.Gender != nil && p.Gender() != nil && p.Gender().Value() != filters.Gender.Value() {
+		return false
+	}
+
+	if filters.Nationality != nil && p.Nationality() != nil && p.Nationality().Value() != filters.Nationality.Value() {
+		return false
+	}
+
+	return true
 }
