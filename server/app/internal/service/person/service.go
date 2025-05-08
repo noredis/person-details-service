@@ -108,17 +108,17 @@ func (s PersonService) UpdatePerson(ctx context.Context, id string, updatePerson
 	patronymic := vo.NewPatronymic(updatePersonDTO.Patronymic)
 
 	age, err := vo.NewAge(updatePersonDTO.Age)
-	if err != nil {
+	if err != nil && updatePersonDTO.Age != 0 {
 		return nil, fmt.Errorf(op, err)
 	}
 
 	gender, err := vo.NewGender(updatePersonDTO.Gender)
-	if err != nil {
+	if err != nil && updatePersonDTO.Gender != "" {
 		return nil, fmt.Errorf(op, err)
 	}
 
 	nationality, err := vo.NewNationality(updatePersonDTO.Nationality)
-	if err != nil {
+	if err != nil && updatePersonDTO.Nationality != "" {
 		return nil, fmt.Errorf(op, err)
 	}
 
