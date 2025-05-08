@@ -100,6 +100,15 @@ func TestPersonHandler(t *testing.T) {
 					personHandler.FindPerson(w, req, httprouter.Params(params))
 
 					So(w.Code, ShouldEqual, http.StatusOK)
+
+					Convey("Delete person api method", func() {
+						req = httptest.NewRequest(http.MethodGet, fmt.Sprintf("/api/v1/persons/%s", personID), nil)
+						w = httptest.NewRecorder()
+
+						personHandler.DeletePerson(w, req, httprouter.Params(params))
+
+						So(w.Code, ShouldEqual, http.StatusNoContent)
+					})
 				})
 			})
 
@@ -142,6 +151,16 @@ func TestPersonHandler(t *testing.T) {
 				personHandler.FindPerson(w, req, httprouter.Params(params))
 
 				So(w.Code, ShouldEqual, http.StatusBadRequest)
+
+				Convey("Delete non-existent person", func() {
+
+					req = httptest.NewRequest(http.MethodDelete, fmt.Sprintf("/api/v1/persons/%s", personID), nil)
+					w = httptest.NewRecorder()
+
+					personHandler.DeletePerson(w, req, httprouter.Params(params))
+
+					So(w.Code, ShouldEqual, http.StatusBadRequest)
+				})
 			})
 
 			Convey("Create empty person", func() {
