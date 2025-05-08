@@ -37,6 +37,9 @@ func TestPersonService(t *testing.T) {
 				So(person.Name, ShouldEqual, createPersonDTO.Name)
 				So(person.Surname, ShouldEqual, createPersonDTO.Surname)
 				So(*person.Patronymic, ShouldEqual, createPersonDTO.Patronymic)
+				So(person.Age, ShouldBeNil)
+				So(person.Gender, ShouldBeNil)
+				So(person.Nationality, ShouldBeNil)
 				So(err, ShouldBeNil)
 
 				Convey("Find saved person", func() {
@@ -65,6 +68,102 @@ func TestPersonService(t *testing.T) {
 					So(person, ShouldNotBeNil)
 					So(err, ShouldBeNil)
 
+					Convey("ID returns error", func() {
+						updatePersonDTO = dto.UpdatePersonDTO{
+							Name:        "John",
+							Surname:     "Doe",
+							Patronymic:  "",
+							Age:         1,
+							Gender:      "male",
+							Nationality: "CA",
+						}
+
+						person, err = personService.UpdatePerson(ctx, "asdasd", updatePersonDTO)
+
+						So(person, ShouldBeNil)
+						So(err, ShouldNotBeNil)
+					})
+
+					Convey("Name returns error", func() {
+						updatePersonDTO = dto.UpdatePersonDTO{
+							Name:        "",
+							Surname:     "Doe",
+							Patronymic:  "",
+							Age:         1,
+							Gender:      "male",
+							Nationality: "CA",
+						}
+
+						person, err = personService.UpdatePerson(ctx, id, updatePersonDTO)
+
+						So(person, ShouldBeNil)
+						So(err, ShouldNotBeNil)
+					})
+
+					Convey("Surname returns error", func() {
+						updatePersonDTO = dto.UpdatePersonDTO{
+							Name:        "John",
+							Surname:     "",
+							Patronymic:  "",
+							Age:         1,
+							Gender:      "male",
+							Nationality: "CA",
+						}
+
+						person, err = personService.UpdatePerson(ctx, id, updatePersonDTO)
+
+						So(person, ShouldBeNil)
+						So(err, ShouldNotBeNil)
+					})
+
+					Convey("Age returns error", func() {
+						updatePersonDTO = dto.UpdatePersonDTO{
+							Name:        "John",
+							Surname:     "Doe",
+							Patronymic:  "",
+							Age:         -1,
+							Gender:      "male",
+							Nationality: "CA",
+						}
+
+						person, err = personService.UpdatePerson(ctx, id, updatePersonDTO)
+
+						So(person, ShouldBeNil)
+						So(err, ShouldNotBeNil)
+					})
+
+					Convey("Gender returns error", func() {
+						updatePersonDTO = dto.UpdatePersonDTO{
+							Name:        "John",
+							Surname:     "Doe",
+							Patronymic:  "",
+							Age:         1,
+							Gender:      "sdfsdf",
+							Nationality: "CA",
+						}
+
+						person, err = personService.UpdatePerson(ctx, id, updatePersonDTO)
+
+						So(person, ShouldBeNil)
+						So(err, ShouldNotBeNil)
+					})
+
+					Convey("Nationality returns error", func() {
+						updatePersonDTO = dto.UpdatePersonDTO{
+							Name:        "John",
+							Surname:     "Doe",
+							Patronymic:  "",
+							Age:         1,
+							Gender:      "male",
+							Nationality: "lkfjasldkfj",
+						}
+
+						person, err = personService.UpdatePerson(ctx, id, updatePersonDTO)
+
+						So(person, ShouldBeNil)
+						So(err, ShouldNotBeNil)
+					})
+
 					Convey("Delete person", func() {
 						id := person.ID
 
@@ -73,6 +172,48 @@ func TestPersonService(t *testing.T) {
 						So(err, ShouldBeNil)
 					})
 				})
+			})
+
+			Convey("Age returns error", func() {
+				ctx := context.Background()
+				createPersonDTO := dto.CreatePersonDTO{
+					Name:       "John",
+					Surname:    "Doe",
+					Patronymic: "1",
+				}
+
+				person, err := personService.CreatePerson(ctx, createPersonDTO)
+
+				So(person, ShouldBeNil)
+				So(err, ShouldNotBeNil)
+			})
+
+			Convey("Gender returns error", func() {
+				ctx := context.Background()
+				createPersonDTO := dto.CreatePersonDTO{
+					Name:       "John",
+					Surname:    "Doe",
+					Patronymic: "2",
+				}
+
+				person, err := personService.CreatePerson(ctx, createPersonDTO)
+
+				So(person, ShouldBeNil)
+				So(err, ShouldNotBeNil)
+			})
+
+			Convey("Nationality returns error", func() {
+				ctx := context.Background()
+				createPersonDTO := dto.CreatePersonDTO{
+					Name:       "John",
+					Surname:    "Doe",
+					Patronymic: "3",
+				}
+
+				person, err := personService.CreatePerson(ctx, createPersonDTO)
+
+				So(person, ShouldBeNil)
+				So(err, ShouldNotBeNil)
 			})
 
 			Convey("Filled in minimally person", func() {

@@ -36,8 +36,8 @@ func TestNationalityRepo(t *testing.T) {
 
 			id := person_vo.NewPersonID()
 			name, _ := person_vo.NewName("John")
-			surname, _ := person_vo.NewName("Doe Jr")
-			patronymic := person_vo.NewPatronymic("")
+			surname, _ := person_vo.NewName("Doe")
+			patronymic := person_vo.NewPatronymic("John")
 			now := time.Now()
 			johnDoe := person.CreatePerson(id, *name, *surname, patronymic, now)
 
@@ -45,6 +45,22 @@ func TestNationalityRepo(t *testing.T) {
 
 			So(nationality, ShouldBeNil)
 			So(err, ShouldBeNil)
+		})
+
+		Convey("Get error nationality", func() {
+			ctx := context.Background()
+
+			id := person_vo.NewPersonID()
+			name, _ := person_vo.NewName("John")
+			surname, _ := person_vo.NewName("Doe")
+			patronymic := person_vo.NewPatronymic("3")
+			now := time.Now()
+			johnDoe := person.CreatePerson(id, *name, *surname, patronymic, now)
+
+			nationality, err := repo.FindOutPersonsNationality(ctx, johnDoe.FullName())
+
+			So(nationality, ShouldBeNil)
+			So(err, ShouldNotBeNil)
 		})
 	})
 }
