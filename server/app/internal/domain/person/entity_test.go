@@ -92,6 +92,22 @@ func TestPerson(t *testing.T) {
 					So(johnDoe.Nationality(), ShouldBeNil)
 				})
 			})
+
+			Convey("Edit personal information", func() {
+				patronymic := vo.NewPatronymic("John")
+				age, _ := vo.NewAge(44)
+				var gender *vo.Gender
+				var nationality *vo.Nationality
+				now := time.Now()
+
+				johnDoe.EditPersonalInformation(johnDoe.Name(), johnDoe.Surname(), patronymic, age, gender, nationality, now)
+
+				So(johnDoe.Patronymic().Equals(*patronymic), ShouldBeTrue)
+				So(johnDoe.Age().Equals(*age), ShouldBeTrue)
+				So(johnDoe.Gender(), ShouldBeNil)
+				So(johnDoe.Nationality(), ShouldBeNil)
+				So(johnDoe.UpdatedAt().UnixNano(), ShouldEqual, now.UnixNano())
+			})
 		})
 
 		Convey("Restore person", func() {

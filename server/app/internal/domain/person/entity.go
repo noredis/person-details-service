@@ -112,3 +112,22 @@ func (p *Person) SpecifyGender(gender *vo.Gender) {
 func (p *Person) SpecifyNationality(nationality *vo.Nationality) {
 	p.nationality = nationality
 }
+
+func (p *Person) EditPersonalInformation(
+	name vo.Name,
+	surname vo.Name,
+	patronymic *vo.Patronymic,
+	age *vo.Age,
+	gender *vo.Gender,
+	nationality *vo.Nationality,
+	now time.Time,
+) {
+	p.name = name
+	p.surname = surname
+	p.patronymic = patronymic
+	p.age = age
+	p.gender = gender
+	p.nationality = nationality
+	updatedAt := now
+	p.updatedAt = &updatedAt
+}
