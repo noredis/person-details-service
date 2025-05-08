@@ -57,6 +57,22 @@ func TestPersonRepo(t *testing.T) {
 			})
 		})
 
+		Convey("Update non-existent person", func() {
+			ctx := context.Background()
+
+			id := vo.NewPersonID()
+			name, _ := vo.NewName("John")
+			surname, _ := vo.NewName("Doe")
+			patronymic := vo.NewPatronymic("")
+			now := time.Now()
+
+			johnDoe := person.CreatePerson(id, *name, *surname, patronymic, now)
+
+			err := repo.UpdatePerson(ctx, *johnDoe)
+
+			So(err, ShouldNotBeNil)
+		})
+
 		Convey("Get non-existent person", func() {
 			ctx := context.Background()
 
