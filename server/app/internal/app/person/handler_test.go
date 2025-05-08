@@ -13,7 +13,10 @@ import (
 	"person-details-service/internal/repo/nationality"
 	"person-details-service/internal/repo/person"
 	service "person-details-service/internal/service/person"
+	dto "person-details-service/internal/service/person/dto"
 	"testing"
+	"encoding/json"
+	"fmt"
 
 	"github.com/julienschmidt/httprouter"
 	. "github.com/smartystreets/goconvey/convey"
@@ -53,6 +56,60 @@ func TestPersonHandler(t *testing.T) {
 				personHandler.CreatePerson(w, req)
 
 				So(w.Code, ShouldEqual, http.StatusCreated)
+				
+				var personResponse dto.PersonDTO
+
+				_ = json.NewDecoder(w.Body).Decode(&personResponse)
+
+				Convey("Update person api method", func() {
+					input := []byte(`
+						{
+							"name": "John",
+							"surname": "Doe",
+							"patronymic": "John",
+							"age": 32
+						}
+					`)
+
+					personID := personResponse.ID
+
+					req := httptest.NewRequest(http.MethodPut, fmt.Sprintf("/api/v1/persons/%s", personID), bytes.NewBuffer(input))
+					w := httptest.NewRecorder()
+
+					idParam := httprouter.Param{Key: "id", Value: personID}
+
+					params := make([]httprouter.Param, 0)
+					params = append(params, idParam)
+
+					personHandler.UpdatePerson(w, req, httprouter.Params(params))
+
+					So(w.Code, ShouldEqual, http.StatusOK)
+				})
+			})
+
+			Convey("Update non-existent person", func() {
+					input := []byte(`
+						{
+							"name": "John",
+							"surname": "Doe",
+							"patronymic": "John",
+							"age": 32
+						}
+					`)
+
+					personID := "asd"
+
+					req := httptest.NewRequest(http.MethodPut, fmt.Sprintf("/api/v1/persons/%s", personID), bytes.NewBuffer(input))
+					w := httptest.NewRecorder()
+
+					idParam := httprouter.Param{Key: "id", Value: personID}
+
+					params := make([]httprouter.Param, 0)
+					params = append(params, idParam)
+
+					personHandler.UpdatePerson(w, req, httprouter.Params(params))
+
+					So(w.Code, ShouldEqual, http.StatusBadRequest)
 			})
 
 			Convey("Create empty person", func() {
