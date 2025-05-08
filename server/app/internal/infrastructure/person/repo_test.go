@@ -8,6 +8,7 @@ import (
 	"person-details-service/internal/domain/person"
 	vo "person-details-service/internal/domain/person/valueobject"
 	repos "person-details-service/internal/infrastructure/person"
+	irepos "person-details-service/internal/repo/person"
 	"person-details-service/pkg/testingpg"
 	"testing"
 	"time"
@@ -39,6 +40,25 @@ func TestRealPersonRepository(t *testing.T) {
 			err := repo.SavePerson(ctx, *johnDoe)
 
 			So(err, ShouldBeNil)
+
+			Convey("Get saved person matches all filters", func() {
+				filterOptions := irepos.FilterOptions{Age: age, Gender: gender, Nationality: nationality}
+
+				persons, err := repo.GetPersons(ctx, filterOptions)
+
+				So(err, ShouldBeNil)
+				So(len(persons), ShouldEqual, 1)
+			})
+
+			Convey("Get saved person not matches age filters", func() {
+				age, _ = vo.NewAge(22)
+				filterOptions := irepos.FilterOptions{Age: age, Gender: gender, Nationality: nationality}
+
+				persons, err := repo.GetPersons(ctx, filterOptions)
+
+				So(err, ShouldBeNil)
+				So(len(persons), ShouldEqual, 0)
+			})
 
 			Convey("Get saved person", func() {
 				restoredJohnDoe, err := repo.GetPersonByID(ctx, id)

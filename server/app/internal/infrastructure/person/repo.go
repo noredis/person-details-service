@@ -17,10 +17,6 @@ func NewPersonRepository(db postgres.PgClient) PersonRepository {
 	return PersonRepository{db}
 }
 
-func (r PersonRepository) GetPersons(ctx context.Context, filterOptions repo.FilterOptions) ([]person.Person, error) {
-	return make([]person.Person, 0), nil
-}
-
 func (r PersonRepository) SavePerson(ctx context.Context, p person.Person) error {
 	const op = "PersonRepository.SavePerson: %w"
 
@@ -167,4 +163,107 @@ func (r PersonRepository) DeletePerson(ctx context.Context, id vo.PersonID) erro
 	}
 
 	return nil
+}
+
+func (r PersonRepository) GetPersons(ctx context.Context, filterOptions repo.FilterOptions) ([]person.Person, error) {
+	const op = "PersonRepository.GetPersons: %w"
+
+	query := `
+		SELECT id, name, surname, patronymic, age, gender, nationality, created_at, updated_at
+		FROM persons
+		WHERE 1=1
+	`
+
+	var params []interface{}
+	paramCounter := 1
+
+	if filterOptions.Age != nil {
+		query += fmt.Sprintf(" AND age = $%d", paramCounter)
+		params = append(params, filterOptions.Age.Value())
+		paramCounter++
+	}
+
+	if filterOptions.Gender != nil {
+		query += fmt.Sprintf(" AND gender = $%d", paramCounter)
+		params = append(params, filterOptions.Gender.Value())
+		paramCounter++
+	}
+
+	if filterOptions.Nationality != nil {
+		query += fmt.Sprintf(" AND nationality = $%d", paramCounter)
+		params = append(params, filterOptions.Nationality.Value())
+	}
+
+	query += ";"
+
+	rows, err := r.db.Query(ctx, query, params...)
+	if err != nil {
+		return nil, fmt.Errorf(op, err)
+	}
+	defer rows.Close()
+
+	var persons []person.Person
+
+	for rows.Next() {
+		var p PersonDTO
+
+		err := rows.Scan(&p.ID, &p.Name, &p.Surname, &p.Patronymic, &p.Age, &p.Gender, &p.Nationality, &p.CreatedAt, &p.UpdatedAt)
+		if err != nil {
+			return nil, fmt.Errorf(op, err)
+		}
+
+		id, err := vo.ParsePersonID(p.ID)
+		if err != nil {
+			return nil, fmt.Errorf(op, err)
+		}
+
+		name, err := vo.NewName(p.Name)
+		if err != nil {
+			return nil, fmt.Errorf(op, err)
+		}
+
+		surname, err := vo.NewName(p.Surname)
+		if err != nil {
+			return nil, fmt.Errorf(op, err)
+		}
+
+		var patronymic *vo.Patronymic
+		if p.Patronymic.Valid {
+			patronymic = vo.NewPatronymic(p.Patronymic.String)
+		}
+
+		var age *vo.Age
+		if p.Age.Valid {
+			age, err = vo.NewAge(int(p.Age.Int16))
+			if err != nil {
+				return nil, fmt.Errorf(op, err)
+			}
+		}
+
+		var gender *vo.Gender
+		if p.Gender.Valid {
+			gender, err = vo.NewGender(p.Gender.String)
+			if err != nil {
+				return nil, fmt.Errorf(op, err)
+			}
+		}
+
+		var nationality *vo.Nationality
+		if p.Nationality.Valid {
+			nationality, err = vo.NewNationality(p.Nationality.String)
+			if err != nil {
+				return nil, fmt.Errorf(op, err)
+			}
+		}
+
+		person := person.RestorePerson(*id, *name, *surname, patronymic, age, gender, nationality, p.CreatedAt, p.UpdatedAt)
+
+		persons = append(persons, *person)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf(op, err)
+	}
+
+	return persons, nil
 }
