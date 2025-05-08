@@ -3,6 +3,8 @@ package person_app_test
 import (
 	"bytes"
 	"context"
+	"encoding/json"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
@@ -15,8 +17,6 @@ import (
 	service "person-details-service/internal/service/person"
 	dto "person-details-service/internal/service/person/dto"
 	"testing"
-	"encoding/json"
-	"fmt"
 
 	"github.com/julienschmidt/httprouter"
 	. "github.com/smartystreets/goconvey/convey"
@@ -56,7 +56,7 @@ func TestPersonHandler(t *testing.T) {
 				personHandler.CreatePerson(w, req)
 
 				So(w.Code, ShouldEqual, http.StatusCreated)
-				
+
 				var personResponse dto.PersonDTO
 
 				_ = json.NewDecoder(w.Body).Decode(&personResponse)
@@ -85,10 +85,26 @@ func TestPersonHandler(t *testing.T) {
 
 					So(w.Code, ShouldEqual, http.StatusOK)
 				})
+
+				Convey("Find person api method", func() {
+					personID := personResponse.ID
+
+					req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/api/v1/persons/%s", personID), nil)
+					w := httptest.NewRecorder()
+
+					idParam := httprouter.Param{Key: "id", Value: personID}
+
+					params := make([]httprouter.Param, 0)
+					params = append(params, idParam)
+
+					personHandler.FindPerson(w, req, httprouter.Params(params))
+
+					So(w.Code, ShouldEqual, http.StatusOK)
+				})
 			})
 
 			Convey("Update non-existent person", func() {
-					input := []byte(`
+				input := []byte(`
 						{
 							"name": "John",
 							"surname": "Doe",
@@ -97,20 +113,37 @@ func TestPersonHandler(t *testing.T) {
 						}
 					`)
 
-					personID := "asd"
+				personID := "asd"
 
-					req := httptest.NewRequest(http.MethodPut, fmt.Sprintf("/api/v1/persons/%s", personID), bytes.NewBuffer(input))
-					w := httptest.NewRecorder()
+				req := httptest.NewRequest(http.MethodPut, fmt.Sprintf("/api/v1/persons/%s", personID), bytes.NewBuffer(input))
+				w := httptest.NewRecorder()
 
-					idParam := httprouter.Param{Key: "id", Value: personID}
+				idParam := httprouter.Param{Key: "id", Value: personID}
 
-					params := make([]httprouter.Param, 0)
-					params = append(params, idParam)
+				params := make([]httprouter.Param, 0)
+				params = append(params, idParam)
 
-					personHandler.UpdatePerson(w, req, httprouter.Params(params))
+				personHandler.UpdatePerson(w, req, httprouter.Params(params))
 
-					So(w.Code, ShouldEqual, http.StatusBadRequest)
+				So(w.Code, ShouldEqual, http.StatusBadRequest)
 			})
+			
+			Convey("Find non-existent person", func() {
+				personID := "asd"
+
+				req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/api/v1/persons/%s", personID), nil)
+				w := httptest.NewRecorder()
+
+				idParam := httprouter.Param{Key: "id", Value: personID}
+
+				params := make([]httprouter.Param, 0)
+				params = append(params, idParam)
+
+				personHandler.FindPerson(w, req, httprouter.Params(params))
+
+				So(w.Code, ShouldEqual, http.StatusBadRequest)
+			})
+
 
 			Convey("Create empty person", func() {
 				input := []byte("")

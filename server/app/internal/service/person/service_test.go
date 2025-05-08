@@ -6,6 +6,7 @@ import (
 	"person-details-service/internal/repo/gender"
 	"person-details-service/internal/repo/nationality"
 	"person-details-service/internal/repo/person"
+	vo "person-details-service/internal/domain/person/valueobject"
 	service "person-details-service/internal/service/person"
 	dto "person-details-service/internal/service/person/dto"
 	"testing"
@@ -37,6 +38,15 @@ func TestPersonService(t *testing.T) {
 				So(person.Surname, ShouldEqual, createPersonDTO.Surname)
 				So(*person.Patronymic, ShouldEqual, createPersonDTO.Patronymic)
 				So(err, ShouldBeNil)
+
+				Convey("Find saved person", func() {
+					id := person.ID
+
+					person, err := personService.FindPerson(ctx, id)
+
+					So(person, ShouldNotBeNil)
+					So(err, ShouldBeNil)
+				})
 
 				Convey("Update person", func() {
 					updatePersonDTO := dto.UpdatePersonDTO{
@@ -121,6 +131,26 @@ func TestPersonService(t *testing.T) {
 				So(person, ShouldBeNil)
 				So(err, ShouldNotBeNil)
 			})
+		})
+
+		Convey("Find non-existent person", func() {
+			ctx := context.Background()
+			id := vo.NewPersonID()
+
+			person, err := personService.FindPerson(ctx, id.Value())
+
+			So(person, ShouldBeNil)
+			So(err, ShouldNotBeNil)
+		})
+
+		Convey("Find person with invalid id", func() {
+			ctx := context.Background()
+			id := "asda"
+
+			person, err := personService.FindPerson(ctx, id)
+
+			So(person, ShouldBeNil)
+			So(err, ShouldNotBeNil)
 		})
 	})
 }

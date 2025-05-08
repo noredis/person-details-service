@@ -5,6 +5,7 @@ import (
 	"person-details-service/internal/domain/person"
 	vo "person-details-service/internal/domain/person/valueobject"
 	"slices"
+	"fmt"
 )
 
 type PersonRepository interface {
@@ -33,7 +34,7 @@ func (r *FakePersonRepository) GetPersonByID(ctx context.Context, id vo.PersonID
 	})
 
 	if idx < 0 {
-		return nil, nil
+		return nil, fmt.Errorf("err")
 	}
 
 	p := r.persons[idx]
@@ -46,7 +47,7 @@ func (r *FakePersonRepository) UpdatePerson(ctx context.Context, p person.Person
 	})
 
 	if idx < 0 {
-		return nil
+		return fmt.Errorf("err")
 	}
 
 	r.persons[idx] = p

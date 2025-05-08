@@ -29,6 +29,7 @@ func NewPersonHandler(ctx context.Context, personService service.PersonService, 
 func (h PersonHandler) Register(router *httprouter.Router) {
 	router.HandlerFunc(http.MethodPost, URL, h.CreatePerson)
 	router.PUT(URL_ID, h.UpdatePerson)
+	router.GET(URL_ID, h.FindPerson)
 }
 
 func (h PersonHandler) CreatePerson(w http.ResponseWriter, req *http.Request) {
@@ -160,3 +161,48 @@ func (h PersonHandler) UpdatePerson(w http.ResponseWriter, req *http.Request, ps
 		slog.Int64("duration_ms", time.Since(startTime).Milliseconds()),
 		slog.Int("status_code", http.StatusCreated))
 }
+
+func (h PersonHandler) FindPerson(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
+	requestID := req.Header.Get("X-Request-ID")
+	startTime := time.Now()
+
+	logger := h.logger.With(
+		slog.String("request_id", requestID),
+		slog.String("method", req.Method),
+		slog.String("path", req.URL.Path),
+		slog.String("remote_ip", req.RemoteAddr),
+	)
+
+	logger.Info("Request to find Person has been received")
+
+	personDTO, err := h.personService.FindPerson(h.ctx, ps.ByName("id"))
+	if err != nil {
+		logger.Error("Unable to find Person",
+			slog.String("error", err.Error()))
+
+		w.WriteHeader(http.StatusBadRequest)
+
+		_, writeErr := w.Write([]byte(err.Error()))
+		if writeErr != nil {
+			logger.Error("Unable to write request response",
+				slog.String("error", err.Error()))
+		}
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+
+	encodeErr := json.NewEncoder(w).Encode(personDTO)
+	if encodeErr != nil {
+		logger.Error("Unable to encode request response",
+			slog.String("error", err.Error()))
+		return
+	}
+
+	logger.Info("Person has been finded successfully",
+		slog.String("person_id", personDTO.ID),
+		slog.Int64("duration_ms", time.Since(startTime).Milliseconds()),
+		slog.Int("status_code", http.StatusCreated))
+}
+

@@ -59,7 +59,7 @@ func TestPersonRepo(t *testing.T) {
 			who, err := repo.GetPersonByID(ctx, id)
 
 			So(who, ShouldBeNil)
-			So(err, ShouldBeNil)
+			So(err, ShouldNotBeNil)
 		})
 	})
 }
