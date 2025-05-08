@@ -30,6 +30,7 @@ func (h PersonHandler) Register(router *httprouter.Router) {
 	router.HandlerFunc(http.MethodPost, URL, h.CreatePerson)
 	router.PUT(URL_ID, h.UpdatePerson)
 	router.GET(URL_ID, h.FindPerson)
+	router.DELETE(URL_ID, h.DeletePerson)
 }
 
 func (h PersonHandler) CreatePerson(w http.ResponseWriter, req *http.Request) {
@@ -206,3 +207,39 @@ func (h PersonHandler) FindPerson(w http.ResponseWriter, req *http.Request, ps h
 		slog.Int("status_code", http.StatusCreated))
 }
 
+func (h PersonHandler) DeletePerson(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
+	requestID := req.Header.Get("X-Request-ID")
+	startTime := time.Now()
+
+	logger := h.logger.With(
+		slog.String("request_id", requestID),
+		slog.String("method", req.Method),
+		slog.String("path", req.URL.Path),
+		slog.String("remote_ip", req.RemoteAddr),
+	)
+
+	logger.Info("Request to delete Person has been received")
+
+	err := h.personService.DeletePerson(h.ctx, ps.ByName("id"))
+	if err != nil {
+		logger.Error("Unable to delete Person",
+			slog.String("error", err.Error()))
+
+		w.WriteHeader(http.StatusBadRequest)
+
+		_, writeErr := w.Write([]byte(err.Error()))
+		if writeErr != nil {
+			logger.Error("Unable to write request response",
+				slog.String("error", err.Error()))
+		}
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusNoContent)
+
+	logger.Info("Person has been deleted successfully",
+		slog.String("person_id", ps.ByName("id")),
+		slog.Int64("duration_ms", time.Since(startTime).Milliseconds()),
+		slog.Int("status_code", http.StatusCreated))
+}

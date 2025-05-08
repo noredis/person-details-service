@@ -49,6 +49,12 @@ func TestPersonRepo(t *testing.T) {
 
 				So(err, ShouldBeNil)
 			})
+
+			Convey("Delete person", func() {
+				err = repo.DeletePerson(ctx, johnDoe.ID())
+
+				So(err, ShouldBeNil)
+			})
 		})
 
 		Convey("Get non-existent person", func() {
@@ -60,6 +66,16 @@ func TestPersonRepo(t *testing.T) {
 
 			So(who, ShouldBeNil)
 			So(err, ShouldNotBeNil)
+		})
+
+		Convey("Delete non-existent person", func() {
+			ctx := context.Background()
+
+			id := vo.NewPersonID()
+
+			err := repo.DeletePerson(ctx, id)
+
+			So(err, ShouldBeNil)
 		})
 	})
 }

@@ -149,3 +149,19 @@ func (s PersonService) FindPerson(ctx context.Context, id string) (*dto.PersonDT
 
 	return dto.MapFromPerson(*p), nil
 }
+
+func (s PersonService) DeletePerson(ctx context.Context, id string) error {
+	const op = "PersonService.DeletePerson: %w"
+
+	pID, err := vo.ParsePersonID(id)
+	if err != nil {
+		return fmt.Errorf(op, err)
+	}
+
+	err = s.personRepo.DeletePerson(ctx, *pID)
+	if err != nil {
+		return fmt.Errorf(op, err)
+	}
+
+	return nil
+}
