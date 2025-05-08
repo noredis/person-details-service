@@ -37,6 +37,24 @@ func TestPersonService(t *testing.T) {
 				So(person.Surname, ShouldEqual, createPersonDTO.Surname)
 				So(*person.Patronymic, ShouldEqual, createPersonDTO.Patronymic)
 				So(err, ShouldBeNil)
+
+				Convey("Update person", func() {
+					updatePersonDTO := dto.UpdatePersonDTO{
+						Name:        "John",
+						Surname:     "Doe",
+						Patronymic:  "John",
+						Age:         32,
+						Gender:      "male",
+						Nationality: "CA",
+					}
+
+					id := person.ID
+
+					person, err := personService.UpdatePerson(ctx, id, updatePersonDTO)
+
+					So(person, ShouldNotBeNil)
+					So(err, ShouldBeNil)
+				})
 			})
 
 			Convey("Filled in minimally person", func() {
