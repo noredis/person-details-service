@@ -67,7 +67,9 @@ func TestPersonHandler(t *testing.T) {
 							"name": "John",
 							"surname": "Doe",
 							"patronymic": "John",
-							"age": 32
+							"age": 32,
+							"gender": "male",
+							"nationality": "CA"
 						}
 					`)
 
@@ -84,6 +86,24 @@ func TestPersonHandler(t *testing.T) {
 					personHandler.UpdatePerson(w, req, httprouter.Params(params))
 
 					So(w.Code, ShouldEqual, http.StatusOK)
+
+					Convey("Get persons matches all filters", func() {
+						req = httptest.NewRequest(http.MethodPost, "/api/v1/persons?age=32&gender=male&nationality=CA", nil)
+						w = httptest.NewRecorder()
+
+						personHandler.GetPersons(w, req)
+
+						So(w.Code, ShouldEqual, http.StatusOK)
+					})
+
+					Convey("Get persons not matches age filters", func() {
+						req = httptest.NewRequest(http.MethodPost, "/api/v1/persons?age=2323&gender=male&nationality=CA", nil)
+						w = httptest.NewRecorder()
+
+						personHandler.GetPersons(w, req)
+
+						So(w.Code, ShouldEqual, http.StatusOK)
+					})
 				})
 
 				Convey("Update empty person", func() {
