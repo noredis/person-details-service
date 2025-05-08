@@ -76,6 +76,12 @@ func TestRealPersonRepository(t *testing.T) {
 				restoredJohnDoe, _ := repo.GetPersonByID(ctx, id)
 				So(restoredJohnDoe.Patronymic(), ShouldNotBeNil)
 				So(restoredJohnDoe.Patronymic().Equals(*patronymic), ShouldBeTrue)
+
+				Convey("Delete person", func() {
+					err = repo.DeletePerson(ctx, johnDoe.ID())
+
+					So(err, ShouldBeNil)
+				})
 			})
 		})
 
@@ -90,6 +96,18 @@ func TestRealPersonRepository(t *testing.T) {
 
 			So(who, ShouldBeNil)
 			So(err, ShouldNotBeNil)
+		})
+
+		Convey("Delete non-existent person", func() {
+			ctx := context.Background()
+			db := testingpg.NewWithIsolatedDatabase(t)
+			repo := repos.NewPersonRepository(db.DB())
+
+			id := vo.NewPersonID()
+
+			err := repo.DeletePerson(ctx, id)
+
+			So(err, ShouldBeNil)
 		})
 	})
 }

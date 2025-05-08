@@ -12,6 +12,7 @@ type PersonRepository interface {
 	SavePerson(ctx context.Context, p person.Person) error
 	GetPersonByID(ctx context.Context, id vo.PersonID) (*person.Person, error)
 	UpdatePerson(ctx context.Context, p person.Person) error
+	DeletePerson(ctx context.Context, id vo.PersonID) error
 }
 
 type FakePersonRepository struct {
@@ -51,5 +52,18 @@ func (r *FakePersonRepository) UpdatePerson(ctx context.Context, p person.Person
 	}
 
 	r.persons[idx] = p
+	return nil
+}
+
+func (r *FakePersonRepository) DeletePerson(ctx context.Context, id vo.PersonID) error {
+	idx := slices.IndexFunc(r.persons, func(p person.Person) bool {
+		return p.ID().Equals(id)
+	})
+
+	if idx < 0 {
+		return nil
+	}
+
+	r.persons = slices.Delete(r.persons, idx, idx+1)
 	return nil
 }

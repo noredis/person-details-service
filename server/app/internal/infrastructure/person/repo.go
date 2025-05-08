@@ -143,3 +143,23 @@ func (r PersonRepository) UpdatePerson(ctx context.Context, p person.Person) err
 
 	return nil
 }
+
+func (r PersonRepository) DeletePerson(ctx context.Context, id vo.PersonID) error {
+	const op = "PersonRepository.DeletePerson: %w"
+
+	const query = `
+		DELETE FROM persons
+		WHERE id = $1;
+	`
+
+	_, err := r.db.Exec(
+		ctx,
+		query,
+		id.Value(),
+	)
+	if err != nil {
+		return fmt.Errorf(op, err)
+	}
+
+	return nil
+}
