@@ -70,7 +70,7 @@ func TestPersonRepo(t *testing.T) {
 
 			err := repo.UpdatePerson(ctx, *johnDoe)
 
-			So(err, ShouldNotBeNil)
+			So(err, ShouldBeNil)
 		})
 
 		Convey("Get non-existent person", func() {
