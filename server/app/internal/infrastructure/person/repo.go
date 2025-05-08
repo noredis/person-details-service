@@ -179,19 +179,19 @@ func (r PersonRepository) GetPersons(ctx context.Context, filterOptions repo.Fil
 
 	if filterOptions.Age != nil {
 		query += fmt.Sprintf(" AND age = $%d", paramCounter)
-		params = append(params, filterOptions.Age.Value())
+		params = append(params, *filterOptions.Age)
 		paramCounter++
 	}
 
 	if filterOptions.Gender != nil {
 		query += fmt.Sprintf(" AND gender = $%d", paramCounter)
-		params = append(params, filterOptions.Gender.Value())
+		params = append(params, *filterOptions.Gender)
 		paramCounter++
 	}
 
 	if filterOptions.Nationality != nil {
 		query += fmt.Sprintf(" AND nationality = $%d", paramCounter)
-		params = append(params, filterOptions.Nationality.Value())
+		params = append(params, *filterOptions.Nationality)
 	}
 
 	query += ";"

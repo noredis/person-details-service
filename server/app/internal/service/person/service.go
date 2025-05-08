@@ -165,3 +165,20 @@ func (s PersonService) DeletePerson(ctx context.Context, id string) error {
 
 	return nil
 }
+
+func (s PersonService) GetPersons(ctx context.Context, filters person_repo.FilterOptions) ([]dto.PersonDTO, error) {
+	const op = "PersonService.GetPersons: %w"
+
+	persons, err := s.personRepo.GetPersons(ctx, filters)
+	if err != nil {
+		return nil, fmt.Errorf(op, err)
+	}
+
+	personDTOs := make([]dto.PersonDTO, 0)
+
+	for _, p := range persons {
+		personDTOs = append(personDTOs, *dto.MapFromPerson(p))
+	}
+
+	return personDTOs, nil
+}

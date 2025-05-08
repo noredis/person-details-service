@@ -9,9 +9,9 @@ import (
 )
 
 type FilterOptions struct {
-	Age         *vo.Age
-	Gender      *vo.Gender
-	Nationality *vo.Nationality
+	Age         *int
+	Gender      *string
+	Nationality *string
 }
 
 type PersonRepository interface {
@@ -88,15 +88,15 @@ func (r *FakePersonRepository) GetPersons(ctx context.Context, filterOptions Fil
 }
 
 func matchesFilters(p person.Person, filters FilterOptions) bool {
-	if filters.Age != nil && p.Age() != nil && p.Age().Value() != filters.Age.Value() {
+	if filters.Age != nil && p.Age() != nil && p.Age().Value() != *filters.Age {
 		return false
 	}
 
-	if filters.Gender != nil && p.Gender() != nil && p.Gender().Value() != filters.Gender.Value() {
+	if filters.Gender != nil && p.Gender() != nil && p.Gender().Value() != *filters.Gender {
 		return false
 	}
 
-	if filters.Nationality != nil && p.Nationality() != nil && p.Nationality().Value() != filters.Nationality.Value() {
+	if filters.Nationality != nil && p.Nationality() != nil && p.Nationality().Value() != *filters.Nationality {
 		return false
 	}
 

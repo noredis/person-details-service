@@ -42,7 +42,11 @@ func TestRealPersonRepository(t *testing.T) {
 			So(err, ShouldBeNil)
 
 			Convey("Get saved person matches all filters", func() {
-				filterOptions := irepos.FilterOptions{Age: age, Gender: gender, Nationality: nationality}
+				ageFilter := age.Value()
+				genderFilter := gender.Value()
+				nationalityFilter := nationality.Value()
+
+				filterOptions := irepos.FilterOptions{Age: &ageFilter, Gender: &genderFilter, Nationality: &nationalityFilter}
 
 				persons, err := repo.GetPersons(ctx, filterOptions)
 
@@ -51,8 +55,11 @@ func TestRealPersonRepository(t *testing.T) {
 			})
 
 			Convey("Get saved person not matches age filters", func() {
-				age, _ = vo.NewAge(22)
-				filterOptions := irepos.FilterOptions{Age: age, Gender: gender, Nationality: nationality}
+				ageFilter := 22
+				genderFilter := gender.Value()
+				nationalityFilter := nationality.Value()
+
+				filterOptions := irepos.FilterOptions{Age: &ageFilter, Gender: &genderFilter, Nationality: &nationalityFilter}
 
 				persons, err := repo.GetPersons(ctx, filterOptions)
 

@@ -68,6 +68,16 @@ func TestPersonService(t *testing.T) {
 					So(person, ShouldNotBeNil)
 					So(err, ShouldBeNil)
 
+					Convey("Find saved person matches all filters", func() {
+						ageFilter := updatePersonDTO.Age
+						filterOptions := person_repo.FilterOptions{Age: &ageFilter}
+
+						persons, err := personService.GetPersons(ctx, filterOptions)
+
+						So(len(persons), ShouldEqual, 1)
+						So(err, ShouldBeNil)
+					})
+
 					Convey("ID returns error", func() {
 						updatePersonDTO = dto.UpdatePersonDTO{
 							Name:        "John",
