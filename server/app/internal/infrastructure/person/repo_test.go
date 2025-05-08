@@ -54,6 +54,29 @@ func TestRealPersonRepository(t *testing.T) {
 				So(restoredJohnDoe.UpdatedAt(), ShouldEqual, johnDoe.UpdatedAt())
 				So(err, ShouldBeNil)
 			})
+
+			Convey("Update person", func() {
+				patronymic := vo.NewPatronymic("John")
+				now = time.Now()
+
+				johnDoe.EditPersonalInformation(
+					johnDoe.Name(),
+					johnDoe.Surname(),
+					patronymic,
+					johnDoe.Age(),
+					johnDoe.Gender(),
+					johnDoe.Nationality(),
+					now,
+				)
+
+				err = repo.UpdatePerson(ctx, *johnDoe)
+
+				So(err, ShouldBeNil)
+
+				restoredJohnDoe, _ := repo.GetPersonByID(ctx, id)
+				So(restoredJohnDoe.Patronymic(), ShouldNotBeNil)
+				So(restoredJohnDoe.Patronymic().Equals(*patronymic), ShouldBeTrue)
+			})
 		})
 
 		Convey("Get non-existent person", func() {

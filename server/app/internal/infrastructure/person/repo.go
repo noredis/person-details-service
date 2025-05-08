@@ -52,7 +52,7 @@ func (r PersonRepository) GetPersonByID(ctx context.Context, id vo.PersonID) (*p
 	const query = `
         SELECT id, name, surname, patronymic, age, gender, nationality, created_at, updated_at
         FROM persons
-        WHERE id = $1
+        WHERE id = $1;
     `
 
 	var p PersonDTO
@@ -106,4 +106,40 @@ func (r PersonRepository) GetPersonByID(ctx context.Context, id vo.PersonID) (*p
 	restoredPerson := person.RestorePerson(id, *name, *surname, patronymic, age, gender, nationality, p.CreatedAt, p.UpdatedAt)
 
 	return restoredPerson, nil
+}
+
+func (r PersonRepository) UpdatePerson(ctx context.Context, p person.Person) error {
+	const op = "PersonRepository.UpdatePerson: %w"
+
+	const query = `
+		UPDATE persons SET
+			name = $1,
+			surname = $2,
+			patronymic = $3,
+			age = $4,
+			gender = $5,
+			nationality = $6,
+			updated_at = $7
+		WHERE id = $8;
+	`
+
+	dto := MapPersonToDTO(p)
+
+	_, err := r.db.Exec(
+		ctx,
+		query,
+		dto.Name,
+		dto.Surname,
+		dto.Patronymic,
+		dto.Age,
+		dto.Gender,
+		dto.Nationality,
+		dto.UpdatedAt,
+		dto.ID,
+	)
+	if err != nil {
+		return fmt.Errorf(op, err)
+	}
+
+	return nil
 }

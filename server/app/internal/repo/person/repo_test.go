@@ -43,6 +43,12 @@ func TestPersonRepo(t *testing.T) {
 				So(restoredJohnDoe.ID().Equals(id), ShouldBeTrue)
 				So(err, ShouldBeNil)
 			})
+
+			Convey("Update person", func() {
+				err = repo.UpdatePerson(ctx, *johnDoe)
+
+				So(err, ShouldBeNil)
+			})
 		})
 
 		Convey("Get non-existent person", func() {
