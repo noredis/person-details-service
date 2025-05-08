@@ -205,4 +205,3 @@ func (h PersonHandler) FindPerson(w http.ResponseWriter, req *http.Request, ps h
 		slog.Int64("duration_ms", time.Since(startTime).Milliseconds()),
 		slog.Int("status_code", http.StatusCreated))
 }
-

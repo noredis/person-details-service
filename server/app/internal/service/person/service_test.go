@@ -2,11 +2,11 @@ package person_service_test
 
 import (
 	"context"
+	vo "person-details-service/internal/domain/person/valueobject"
 	"person-details-service/internal/repo/age"
 	"person-details-service/internal/repo/gender"
 	"person-details-service/internal/repo/nationality"
 	"person-details-service/internal/repo/person"
-	vo "person-details-service/internal/domain/person/valueobject"
 	service "person-details-service/internal/service/person"
 	dto "person-details-service/internal/service/person/dto"
 	"testing"
@@ -64,6 +64,14 @@ func TestPersonService(t *testing.T) {
 
 					So(person, ShouldNotBeNil)
 					So(err, ShouldBeNil)
+
+					Convey("Delete person", func() {
+						id := person.ID
+
+						err = personService.DeletePerson(ctx, id)
+
+						So(err, ShouldBeNil)
+					})
 				})
 			})
 
@@ -141,6 +149,12 @@ func TestPersonService(t *testing.T) {
 
 			So(person, ShouldBeNil)
 			So(err, ShouldNotBeNil)
+
+			Convey("Delete non-existent person", func() {
+				err = personService.DeletePerson(ctx, id.Value())
+
+				So(err, ShouldBeNil)
+			})
 		})
 
 		Convey("Find person with invalid id", func() {
@@ -151,6 +165,12 @@ func TestPersonService(t *testing.T) {
 
 			So(person, ShouldBeNil)
 			So(err, ShouldNotBeNil)
+
+			Convey("Delete person with invalid id", func() {
+				err = personService.DeletePerson(ctx, id)
+
+				So(err, ShouldNotBeNil)
+			})
 		})
 	})
 }

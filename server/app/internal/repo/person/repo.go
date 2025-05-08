@@ -2,10 +2,10 @@ package person_repo
 
 import (
 	"context"
+	"fmt"
 	"person-details-service/internal/domain/person"
 	vo "person-details-service/internal/domain/person/valueobject"
 	"slices"
-	"fmt"
 )
 
 type PersonRepository interface {

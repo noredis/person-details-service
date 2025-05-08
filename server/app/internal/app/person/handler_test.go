@@ -127,7 +127,7 @@ func TestPersonHandler(t *testing.T) {
 
 				So(w.Code, ShouldEqual, http.StatusBadRequest)
 			})
-			
+
 			Convey("Find non-existent person", func() {
 				personID := "asd"
 
@@ -143,7 +143,6 @@ func TestPersonHandler(t *testing.T) {
 
 				So(w.Code, ShouldEqual, http.StatusBadRequest)
 			})
-
 
 			Convey("Create empty person", func() {
 				input := []byte("")
