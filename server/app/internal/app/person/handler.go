@@ -36,6 +36,18 @@ func (h PersonHandler) Register(router *httprouter.Router) {
 	router.HandlerFunc(http.MethodGet, URL, h.GetPersons)
 }
 
+// CreatePerson godoc
+// @Summary Create a new person
+// @Description Create a new person with the input payload
+// @Tags persons
+// @Accept json
+// @Produce json
+// @Param X-Request-ID header string false "Request ID"
+// @Param person body dto.CreatePersonDTO true "Person data to create"
+// @Success 201 {object} dto.PersonDTO
+// @Header 201 {string} Location "URL to the created resource"
+// @Failure 400 {string} string "Bad request"
+// @Router /persons [post]
 func (h PersonHandler) CreatePerson(w http.ResponseWriter, req *http.Request) {
 	requestID := req.Header.Get("X-Request-ID")
 	startTime := time.Now()
@@ -101,6 +113,18 @@ func (h PersonHandler) CreatePerson(w http.ResponseWriter, req *http.Request) {
 		slog.Int("status_code", http.StatusCreated))
 }
 
+// UpdatePerson godoc
+// @Summary Update an existing person
+// @Description Update person details by ID
+// @Tags persons
+// @Accept json
+// @Produce json
+// @Param X-Request-ID header string false "Request ID"
+// @Param id path string true "Person ID"
+// @Param person body dto.UpdatePersonDTO true "Person data to update"
+// @Success 200 {object} dto.PersonDTO
+// @Failure 400 {string} string "Bad request"
+// @Router /persons/{id} [put]
 func (h PersonHandler) UpdatePerson(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 	requestID := req.Header.Get("X-Request-ID")
 	startTime := time.Now()
@@ -166,6 +190,16 @@ func (h PersonHandler) UpdatePerson(w http.ResponseWriter, req *http.Request, ps
 		slog.Int("status_code", http.StatusCreated))
 }
 
+// FindPerson godoc
+// @Summary Get person by ID
+// @Description Get person details by ID
+// @Tags persons
+// @Produce json
+// @Param X-Request-ID header string false "Request ID"
+// @Param id path string true "Person ID"
+// @Success 200 {object} dto.PersonDTO
+// @Failure 400 {string} string "Bad request"
+// @Router /persons/{id} [get]
 func (h PersonHandler) FindPerson(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 	requestID := req.Header.Get("X-Request-ID")
 	startTime := time.Now()
@@ -210,6 +244,15 @@ func (h PersonHandler) FindPerson(w http.ResponseWriter, req *http.Request, ps h
 		slog.Int("status_code", http.StatusCreated))
 }
 
+// DeletePerson godoc
+// @Summary Delete person by ID
+// @Description Delete person by ID
+// @Tags persons
+// @Param X-Request-ID header string false "Request ID"
+// @Param id path string true "Person ID"
+// @Success 204 "No Content"
+// @Failure 400 {string} string "Bad request"
+// @Router /persons/{id} [delete]
 func (h PersonHandler) DeletePerson(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 	requestID := req.Header.Get("X-Request-ID")
 	startTime := time.Now()
@@ -247,6 +290,18 @@ func (h PersonHandler) DeletePerson(w http.ResponseWriter, req *http.Request, ps
 		slog.Int("status_code", http.StatusCreated))
 }
 
+// GetPersons godoc
+// @Summary Get list of persons
+// @Description Get list of persons with optional filtering
+// @Tags persons
+// @Produce json
+// @Param X-Request-ID header string false "Request ID"
+// @Param age query integer false "Filter by age"
+// @Param gender query string false "Filter by gender"
+// @Param nationality query string false "Filter by nationality"
+// @Success 200 {array} dto.PersonDTO
+// @Failure 400 {string} string "Bad request"
+// @Router /persons [get]
 func (h *PersonHandler) GetPersons(w http.ResponseWriter, req *http.Request) {
 	requestID := req.Header.Get("X-Request-ID")
 	startTime := time.Now()

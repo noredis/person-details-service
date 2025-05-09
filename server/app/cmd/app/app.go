@@ -18,6 +18,8 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/julienschmidt/httprouter"
+	_ "person-details-service/docs"
+    "github.com/swaggo/http-swagger"
 )
 
 func main() {
@@ -85,6 +87,8 @@ func main() {
 	personHandler := person_app.NewPersonHandler(ctx, personService, logger)
 
 	router := httprouter.New()
+
+	router.HandlerFunc(http.MethodGet, "/swagger/*any", httpSwagger.WrapHandler)
 
 	personHandler.Register(router)
 

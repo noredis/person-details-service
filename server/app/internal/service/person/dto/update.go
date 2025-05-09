@@ -1,5 +1,6 @@
 package person_dto
 
+// @swaggo
 type UpdatePersonDTO struct {
 	Name        string `json:"name"`
 	Surname     string `json:"surname"`
